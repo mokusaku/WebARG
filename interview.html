@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>光の粒子を、掌に。――写真家・鳴海朔が語る『Luminar 85mm』の呪縛と真理 | YOIMI CAMERA</title>
+    <style>
+        /* 共通設定：プレミアムなダークテーマ */
+        body { margin: 0; font-family: "Helvetica Neue", "Arial", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif; background-color: #202020; color: #ffffff; line-height: 1.8; }
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.6; }
+        
+        /* ヘッダー部 */
+        header { background-color: #202020; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333333; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 5px; }
+        .logo span { font-size: 10px; font-weight: normal; letter-spacing: 2px; display: block; color: #888; }
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 13px; letter-spacing: 1px; transition: color 0.3s; }
+        nav a:hover { color: #aaaaaa; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .login-btn { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 8px 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { background-color: #ffffff; color: #000000; }
+        .search-widget { position: relative; display: flex; align-items: center; }
+        .search-widget input[type="text"] { background-color: #222222; border: 1px solid #444444; color: #ffffff; padding: 10px 15px; width: 180px; font-size: 12px; outline: none; transition: border-color 0.3s; }
+        .search-widget input[type="text"]:focus { border-color: #ffffff; }
+        .search-widget button { background-color: #ffffff; color: #000000; border: none; padding: 10px 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .search-widget button:hover { background-color: #cccccc; }
+        #searchResult { display: none; position: absolute; top: 100%; right: 0; background-color: #ffffff; color: #111111; border: 1px solid #eeeeee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 260px; padding: 20px; margin-top: 10px; font-size: 13px; z-index: 999; }
+
+        /* コンテンツ領域 */
+        .container { max-width: 850px; margin: 100px auto; padding: 0 20px; }
+        .article-header { border-bottom: 1px solid #444444; padding-bottom: 40px; margin-bottom: 50px; text-align: center; }
+        .article-category { color: #888888; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 15px; display: block; }
+        .article-title { font-size: 32px; font-weight: normal; color: #ffffff; margin: 0; letter-spacing: 2px; line-height: 1.5; }
+        .article-credits { color: #aaaaaa; font-size: 14px; margin-top: 25px; letter-spacing: 1px; }
+        .article-body { font-size: 16px; color: #dddddd; text-align: justify; }
+        .article-body p { margin-bottom: 30px; }
+        .speaker-yu { color: #aaaaaa; font-weight: bold; margin-top: 40px; display: block; font-size: 13px; letter-spacing: 1px; }
+        .speaker-saku { color: #ffffff; font-weight: bold; margin-top: 40px; display: block; font-size: 13px; letter-spacing: 1px; }
+        .dialogue { margin-left: 0; margin-bottom: 30px; display: block; color: #cccccc;}
+        .emphasis { color: #ffffff; font-weight: bold; border-bottom: 2px solid #333333; padding-bottom: 2px; }
+
+        footer { background-color: #202020; color: #555555; text-align: center; padding: 40px 20px; font-size: 11px; margin-top: 100px; letter-spacing: 2px; border-top: 1px solid #333333; }
+
+        /* プロフィールセクション */
+        .profile-section { display: flex; gap: 40px; margin-bottom: 60px; padding: 40px; background-color: #1a1a1a; border: 1px solid #333333; border-radius: 4px; }
+        .profile-card { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .profile-thumb { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; margin-bottom: 20px; border: 2px solid #444; filter: grayscale(30%); transition: filter 0.3s; }
+        .profile-card:hover .profile-thumb { filter: grayscale(0%); }
+        .profile-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-name { font-size: 18px; margin: 0 0 5px 0; color: #ffffff; letter-spacing: 2px; font-weight: normal; }
+        .profile-age { font-size: 11px; color: #888; margin-bottom: 15px; letter-spacing: 1px; }
+        .profile-title { font-size: 12px; color: #aaaaaa; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; border-bottom: 1px solid #444; padding-bottom: 8px; width: 100%; }
+        .profile-desc { font-size: 14px; color: #cccccc; line-height: 1.7; text-align: left; margin: 0; }
+
+
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px 20px; height: auto; }
+            nav { margin: 15px 0; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .header-right { width: 100%; flex-direction: column; gap: 15px; }
+            .search-widget { width: 100%; justify-content: center; }
+            .search-widget input[type="text"] { width: 60%; }
+            .article-title { font-size: 24px; }
+            .profile-section { flex-direction: column; gap: 40px; padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="index.html">YOIMI <span>ヨイミカメラ</span></a></div>
+        <nav><a href="notice.html">PRODUCTS</a><a href="notice.html">LENSES</a><a href="notice.html">RENTAL</a><a href="staff.html">STAFF</a><a href="company.html">ABOUT</a></nav>
+        <div class="header-right">
+            <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
+            <div class="search-widget">
+                <input type="text" id="keywordInput" placeholder="サイト内・商品検索">
+                <button onclick="executeSearch()">検索</button>
+                <div id="searchResult"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <article>
+            <div class="article-header">
+                <span class="article-category">Special Interview / ARCHIVE</span>
+                <h1 class="article-title">光の粒子を、掌に。――写真家・鳴海朔が語る『Luminar 85mm』の呪縛と真理</h1>
+                <div class="article-credits">Interviewer: 星野 悠 (Hoshino Yu)<br>Place: 鳴海写真事務所</div>
+            </div>
+
+            <div class="profile-section">
+                <div class="profile-card">
+                    <div class="profile-thumb">
+                        <img src="images/Narumi Saku.webp" alt="鳴海 朔">
+                    </div>
+                    <h2 class="profile-name">鳴海 朔</h2>
+                    <span class="profile-age">Saku Narumi (45)</span>
+                    <div class="profile-title">Photographer</div>
+                    <p class="profile-desc">
+                        フリーランスカメラマン。完璧主義で、名玉 『Luminar 85mm』を未だにメインで使用し続ける強いこだわりを持つ特異な写真家。彼が光を操り撮影するポートレートは、見る者の心を深く引き付ける。光蝕大学 写真学科卒業。
+                    </p>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-thumb">
+                        <img src="images/Hoshino Yu.webp" alt="星野 悠">
+                    </div>
+                    <h2 class="profile-name">星野 悠</h2>
+                    <span class="profile-age">Yu Hoshino (24)</span>
+                    <div class="profile-title">Interviewer / Apprentice</div>
+                    <p class="profile-desc">
+                        光蝕大学 写真学科卒業。学生時代に国立光蝕美術館で見た鳴海氏の写真展に衝撃を受け、写真の本質を追うことを決意。現在はヨイミカメラに勤務しながら、鳴海の弟子として現場を共にしている。
+                    </p>
+                </div>
+            </div>
+
+            <div class="article-body">
+                <div style="font-style: italic; color: #888888; background: #1a1a1a; padding: 20px; border-left: 3px solid #d9534f; margin-bottom: 40px; font-size: 14px; line-height: 1.7;">
+                    【記事公開日：2016年 4月15日(『YOIMI Vision』Vol.34)】<br>
+                    ※本記事はアーカイブです。刈谷さんへ。内容を確認し、誤字脱字などあれば修正しておいてください。公開前にこの文章を消すのを忘れずに！
+                </div>
+
+                <span class="speaker-yu">[星野 悠]</span>
+                <span class="dialogue">
+                    先生、本日はよろしくお願いします！ 先生のアトリエ、いつ来てもコーヒーの良い香りがして落ち着きますね。今日は先生の長年の相棒とも言えるレンズ、『<span class="emphasis">Luminar 85mm F1.4</span>』についてたっぷり語っていただきますよ！
+                </span>
+
+                <span class="speaker-saku">[鳴海 朔]</span>
+                <span class="dialogue">
+                    ははは、お手柔らかに頼むよ、悠君。相棒なんて大げさなものじゃないけど、まあ、<span class="emphasis">これがないと私のポートレート撮影は始まらない</span>からね。コーヒー、おかわり淹れようか？
+                </span>
+
+                <span class="speaker-yu">[星野]</span>
+                <span class="dialogue">
+                    あ、ありがとうございます！ ……そうだ先生、少し遅くなってしまいましたが、これ受け取ってください。先月の6日、お誕生日でしたよね。ささやかですが、僕からのお祝いです。
+                </span>
+                <div style="margin: 40px auto; text-align: center; max-width: 500px;">
+                    <img src="images/interview_1.webp" alt="星野からの誕生日プレゼント" style="width: 100%; height: auto; border: 1px solid #333; filter: grayscale(10%) contrast(1.1);">
+                    <p style="font-size: 12px; color: #888; margin-top: 12px; letter-spacing: 1px; font-style: italic;">[ 写真：星野(右)からプレゼントを受け取る鳴海(左) ]</p>
+                </div>
+
+                <span class="speaker-saku">[鳴海]</span>
+                <span class="dialogue">
+                    おや、わざわざ気を遣わせてしまってすまないね。開けてもいいかい？ ……おお、これは珍しい銘柄のコーヒー豆じゃないか。
+                </span>
+
+                <span class="speaker-yu">[星野]</span>
+                <span class="dialogue">
+                    はい！ 先生はラテよりもブラック派で、コーヒーに砂糖は絶対に入れないって仰っていたので。酸味が少なくて、ストレートで飲むのにぴったりの深煎り豆を専門店で選んできたんです。
+                </span>
+
+                <span class="speaker-saku">[鳴海]</span>
+                <span class="dialogue">
+                    素晴らしい。私の好みを完璧に把握しているね。ありがとう。さっそくこの後、淹れさせてもらうよ。
+                </span>
+
+                <span class="speaker-yu">[星野]</span>
+                <span class="dialogue">
+                    喜んでもらえてよかったです！ ……それにしても、先生の作品は本当にすべてこのオールドレンズで撮られていますよね。最近出た『ASTRAL』の新型なんて、オートフォーカスも爆速で、収差もゼロの完璧なレンズですよ？ 正直、最新機材には興味ないんですか？
+                </span>
+
+                <span class="speaker-saku">[鳴海]</span>
+                <span class="dialogue">
+                    いやいや、とんでもない！ ASTRALの新作は本当に素晴らしい技術の結晶だと思うよ。この前ヨイミカメラさんで少し触らせてもらったけど、あの解像度には心底感動しちゃったな。ただ……私には少し『優等生』すぎるというか、完璧すぎるんだよね。
+                </span>
+                <div style="margin: 40px auto; text-align: center; max-width: 500px;">
+                    <img src="images/Interview_2.webp" alt="インタビュー中の鳴海先生" style="width: 100%; height: auto; border: 1px solid #333; filter: grayscale(10%) contrast(1.1);">
+                    <p style="font-size: 12px; color: #888; margin-top: 12px; letter-spacing: 1px; font-style: italic;">[ 写真：愛用のLuminarを傍らに、最新機材について語る ]</p>
+                </div>
+
+                <span class="speaker-yu">[星野]</span>
+                <span class="dialogue">
+                    優等生すぎるとダメなんですか？
+                </span>
+
+                <span class="speaker-saku">[鳴海]</span>
+                <span class="dialogue">
+                    ダメじゃないさ。ただ、私は人間を撮るのが好きだからね。人もレンズも、少し不器用だったり、欠点がある方が愛嬌があって魅力的だと思わないかい？ Luminarは逆光だとすぐに暴れて変なフレアが出るけど、「おっ、今日は機嫌が悪いな。じゃあこうやって光を当ててみようか」なんて思いながら、光と対話してコントロールするのが楽しくて仕方ないんだよ。
+                </span>
+
+                <span class="speaker-yu">[星野]</span>
+                <span class="dialogue">
+                    なるほど、「光との対話」ですか！ 先生の温かい写真の秘密が少し分かった気がします。……だからって、<span class="emphasis">撮影現場にLuminar 85mmを付けたカメラ1台しか持っていかない</span>のは、アシスタントとしてはいつもヒヤヒヤするんですが（笑）。せめて予備のレンズくらい持っていきましょうよ！
+                </span>
+
+                <span class="speaker-saku">[鳴海]</span>
+                <span class="dialogue">
+                    ごめんごめん、いつも心配かけて（笑）。でも、予備があると「あっちのレンズの方が綺麗に撮れるかな」って余計な迷いが出ちゃう不器用な性分でね。<span class="emphasis">現場には絶対にこれ一本しか持ち込まない</span>って決めてるんだ。レンズを付け替える時間を、目の前のモデルさんと笑い合う時間に使いたいからね。
+                </span>
+
+                <span class="speaker-yu">[星野]</span>
+                <span class="dialogue">
+                    もう、先生らしいなあ。僕もいつか、そんな風に言い切れるカメラマンになりたいです！
+                </span>
+
+                <span class="speaker-saku">[鳴海]</span>
+                <span class="dialogue">
+                    悠君ならきっとなれるさ。今度、一緒にオールドレンズ探しに行こうか。終わったら美味しいご飯でも奢るよ。
+                </span>
+            </div>
+        </article>
+        <div style="text-align: center; margin-bottom: 40px; color: #888;">※本アーカイブ記事の無断転載・複製を禁じます。&copy; YOIMI CAMERA / 星野 悠</div>
+    </div>
+    <footer>&copy; 2016 YOIMI CAMERA. All Rights Reserved.</footer>
+
+    <script src="search.js"></script>
+</body>
+</html>

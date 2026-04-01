@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLOUD DATABASE | YOIMI CAMERA</title>
+    <style>
+        :root {
+            --bg-color: #202020;
+            --header-bg: #1a1a1a;
+            --accent-color: #d9534f;
+            --text-color: #ffffff;
+            --border-color: #444;
+            --card-bg: #2a2a2a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ヘッダー部（index.htmlと同期） */
+        header { background-color: #202020; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333333; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 5px; }
+        .logo span { font-size: 10px; font-weight: normal; letter-spacing: 2px; display: block; color: #888; }
+        .logo a { color: #fff; text-decoration: none; }
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 13px; letter-spacing: 1px; color: #ffffff; text-decoration: none; transition: color 0.3s; }
+        nav a:hover { color: #aaaaaa; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .login-btn { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 8px 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { background-color: #ffffff; color: #000000; }
+        .search-widget { position: relative; display: flex; align-items: center; }
+        .search-widget input[type="text"] { background-color: #222222; border: 1px solid #444444; color: #ffffff; padding: 10px 15px; width: 180px; font-size: 12px; outline: none; transition: border-color 0.3s; }
+        .search-widget input[type="text"]:focus { border-color: #ffffff; }
+        .search-widget button { background-color: #ffffff; color: #000000; border: none; padding: 10px 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .search-widget button:hover { background-color: #cccccc; }
+        #searchResult { display: none; position: absolute; top: 100%; right: 0; background-color: #ffffff; color: #111111; border: 1px solid #eeeeee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 260px; padding: 20px; margin-top: 10px; font-size: 13px; z-index: 999; }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .cloud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .user-info h1 {
+            margin: 0;
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+
+        .user-info p {
+            margin: 5px 0 0;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .storage-status {
+            text-align: right;
+            width: 300px;
+        }
+
+        .storage-bar {
+            height: 10px;
+            background: #444;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .storage-fill {
+            height: 100%;
+            background: #5cb85c;
+            width: 12%;
+        }
+
+        .storage-text {
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* システムエラー通知 */
+        .alert-box {
+            background: rgba(217, 83, 79, 0.15);
+            border: 1px solid var(--accent-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-box i {
+            font-style: normal;
+            font-size: 24px;
+            margin-right: 20px;
+        }
+
+        .alert-content h3 {
+            margin: 0 0 5px;
+            color: var(--accent-color);
+            font-size: 18px;
+        }
+
+        .alert-content p {
+            margin: 0;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .alert-box.critical {
+            background: rgba(217, 83, 79, 0.25);
+            border: 2px solid var(--accent-color);
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: var(--accent-color); }
+            50% { border-color: #ff2222; }
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+        }
+
+        .file-list-section {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 20px;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 15px;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 10px;
+            border-bottom: 1px solid #333;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .file-item:hover {
+            background: #333;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: #444;
+            border-radius: 4px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .file-info {
+            flex-grow: 1;
+        }
+
+        .file-name {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .file-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 破損・削除済みファイルのスタイル */
+        .file-item.corrupted {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .file-item.corrupted:hover {
+            background: transparent;
+        }
+        .file-item.corrupted .file-icon {
+            background: #3a1515;
+            color: #d9534f;
+        }
+        .file-item.corrupted .file-name {
+            text-decoration: line-through;
+            color: #666;
+        }
+        .file-item.corrupted .file-meta {
+            color: #d9534f;
+        }
+
+        /* 生き残ったファイル（緑のアクセント） */
+        .file-item.surviving .file-icon {
+            background: #1a3a1a;
+            color: #5cb85c;
+        }
+        .file-item.surviving .file-name {
+            color: #ffffff;
+        }
+
+        /* エラーログファイル */
+        .file-item.error-log {
+            background: rgba(217, 83, 79, 0.08);
+            border-left: 3px solid var(--accent-color);
+        }
+        .file-item.error-log .file-icon {
+            background: #3a1515;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        .file-item.error-log .file-name {
+            color: var(--accent-color);
+        }
+        .file-item.error-log:hover {
+            background: rgba(217, 83, 79, 0.15);
+        }
+
+        .recent-activity {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        .activity-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .activity-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .activity-time {
+            font-size: 11px;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .activity-desc {
+            font-size: 13px;
+        }
+
+        .activity-desc.error {
+            color: var(--accent-color);
+        }
+
+        .activity-desc.warning {
+            color: #f0ad4e;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-size: 14px;
+            border-top: 1px solid #333;
+            margin-top: 80px;
+        }
+
+        /* モバイル対応（ヘッダー） */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px 20px; }
+            nav { margin: 15px 0; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .header-right { width: 100%; flex-direction: column; gap: 10px; }
+            .search-widget { width: 100%; justify-content: center; }
+            .search-widget input[type="text"] { width: 60%; }
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .cloud-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .storage-status {
+                width: 100%;
+                margin-top: 20px;
+                text-align: left;
+            }
+            .user-info h1 {
+                font-size: 22px;
+            }
+            .file-name {
+                word-break: break-all;
+                font-size: 13px;
+            }
+            .file-meta {
+                font-size: 11px;
+                word-break: break-all;
+            }
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .alert-box {
+                flex-direction: column;
+                text-align: left;
+            }
+            .alert-box i {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="index.html">YOIMI <span>ヨイミカメラ</span></a></div>
+        <nav>
+            <a href="notice.html">PRODUCTS</a><a href="notice.html">LENSES</a><a href="notice.html">RENTAL</a><a href="staff.html">STAFF</a><a href="company.html">ABOUT</a>
+        </nav>
+        <div class="header-right">
+            <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
+            <div class="search-widget">
+                <input type="text" id="keywordInput" placeholder="サイト内・商品検索">
+                <button onclick="executeSearch()">検索</button>
+                <div id="searchResult"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="cloud-header">
+            <div class="user-info">
+                <h1>PORTFOLIO CLOUD <span style="font-size: 18px; color: var(--accent-color);">Premium</span></h1>
+                <p>Welcome back, <strong>鳴海 朔</strong> 様 (Member ID: Luminar85)</p>
+            </div>
+            <div class="storage-status">
+                <div class="storage-text">0.24 TB / 2.00 TB used (12%)</div>
+                <div class="storage-bar">
+                    <div class="storage-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- システムエラー通知 -->
+        <div class="alert-box critical">
+            <i>🔴</i>
+            <div class="alert-content">
+                <h3>SYSTEM ALERT</h3>
+                <p>2016.10.27 02:48 — 管理者権限による大規模な削除オペレーションが実行されました。プロセスはシステムエラーにより中断されました。詳細はエラーログを確認してください。</p>
+            </div>
+        </div>
+
+        <div class="alert-box">
+            <i>⚠️</i>
+            <div class="alert-content">
+                <h3>重要：サービス休止に伴うデータバックアップのお願い</h3>
+                <p>店舗およびクラウド更新業務の臨時休止に伴い、現在保存されているRAWデータおよび完成データの二次バックアップを強く推奨しております。更新期間中のデータアクセス制限にご注意ください。</p>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="file-list-section">
+                <div class="section-header">
+                    <h2>FILE MANAGER</h2>
+                    <span style="font-size: 12px; color: var(--accent-color);">Total: 12,482 → 4 files</span>
+                </div>
+                <ul class="file-list">
+                    <!-- 破損フォルダ -->
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">2016_Portrait_Session_Autumn</span>
+                            <span class="file-meta">DELETED | 0 byte | Purged: 2016.10.27 02:48</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Luminar_Lenses_Experiment_Archive</span>
+                            <span class="file-meta">DELETED | 0 byte | Purged: 2016.10.27 02:48</span>
+                        </div>
+                    </li>
+                    <!-- 破損ファイル群 -->
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">DSC_0894_Luminar85Test.ARWL</span>
+                            <span class="file-meta">CORRUPTED | Broken Image | File header destroyed</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">DSC_0895_Luminar85Test.ARWL</span>
+                            <span class="file-meta">CORRUPTED | Broken Image | File header destroyed</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">DSC_0896_Luminar85Test.ARWL</span>
+                            <span class="file-meta">ACCESS DENIED | Permission revoked by Admin</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Memories_of_Light_Draft.docx</span>
+                            <span class="file-meta">DELETED | 0 byte | Purged: 2016.10.27 02:49</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Client_NDA_Agreement_2016.pdf</span>
+                            <span class="file-meta">ACCESS DENIED | Permission revoked by Admin</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Studio_Schedule_Oct.xlsx</span>
+                            <span class="file-meta">DELETED | 0 byte | Purged: 2016.10.27 02:49</span>
+                        </div>
+                    </li>
+
+                    <!-- ─── 削除プロセス中断により消え残ったファイル ─── -->
+                    <li style="padding: 15px 10px; border-bottom: 1px solid #333; color: #5cb85c; font-size: 12px; letter-spacing: 1px;">── Deletion process interrupted (SyncError) ──</li>
+
+                    <li class="file-item surviving" onclick="window.open('images/Portrait_1.webp','_blank')" title="クリックして画像を表示">
+                        <div class="file-icon">JPG</div>
+                        <div class="file-info">
+                            <span class="file-name">DSL_0027.jpg</span>
+                            <span class="file-meta">JPG Format | Updated: 2016.04.18 — <span style="color: #5cb85c;">INTACT</span></span>
+                        </div>
+                    </li>
+                    <li class="file-item surviving" onclick="window.open('images/Portrait_2.webp','_blank')" title="クリックして画像を表示">
+                        <div class="file-icon">JPG</div>
+                        <div class="file-info">
+                            <span class="file-name">DSL_0342.jpg</span>
+                            <span class="file-meta">JPG Format | Updated: 2016.08.07 — <span style="color: #5cb85c;">INTACT</span></span>
+                        </div>
+                    </li>
+                    <li class="file-item surviving" onclick="window.open('images/Portrait_3.webp','_blank')" title="クリックして画像を表示">
+                        <div class="file-icon">JPG</div>
+                        <div class="file-info">
+                            <span class="file-name">DSL_1159.jpg</span>
+                            <span class="file-meta">JPG Format | Updated: 2016.09.01 — <span style="color: #5cb85c;">INTACT</span></span>
+                        </div>
+                    </li>
+
+                    <!-- エラーログ -->
+                    <li class="file-item surviving" onclick="location.href='sync_error_log.html'" title="クリックして内容を確認">
+                        <div class="file-icon">LOG</div>
+                        <div class="file-info">
+                            <span class="file-name">sync_error_log.txt</span>
+                            <span class="file-meta">System Log | 2.1 KB | Created: 2016.10.27 02:48 — <span style="color: #5cb85c;">INTACT</span></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="recent-activity">
+                <div class="section-header">
+                    <h2>LOGS</h2>
+                </div>
+                <ul class="activity-list">
+                    <li class="activity-item">
+                        <span class="activity-time">2016.10.27 02:48</span>
+                        <span class="activity-desc error">[ERROR] Unauthorized Override Detected.</span>
+                    </li>
+                    <li class="activity-item">
+                        <span class="activity-time">2016.10.27 02:49</span>
+                        <span class="activity-desc warning">[WARN] Deletion process halted — SyncError 0x8024401C</span>
+                    </li>
+                    <li class="activity-item">
+                        <span class="activity-time">2016.10.27 02:49</span>
+                        <span class="activity-desc error">[SYSTEM] 12,478 files purged. 4 files remain (process incomplete).</span>
+                    </li>
+                    <li class="activity-item" style="border-top: 2px solid #333; margin-top: 10px; padding-top: 20px;">
+                        <span class="activity-time">2016.10.25 10:14</span>
+                        <span class="activity-desc">システムにログインしました（IP: 192.168.XXX.XXX）</span>
+                    </li>
+                    <li class="activity-item">
+                        <span class="activity-time">2016.10.22 23:45</span>
+                        <span class="activity-desc">新規 RAW データ 3件をアップロードしました。</span>
+                    </li>
+                    <li class="activity-item">
+                        <span class="activity-time">2016.10.20 18:30</span>
+                        <span class="activity-desc">"Memories_of_Light_Draft.docx" を編集しました。</span>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <footer>&copy; 2016 YOIMI CAMERA Cloud Service Division. All Rights Reserved.</footer>
+    <script src="search.js"></script>
+</body>
+</html>

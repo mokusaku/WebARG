@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebMail - Shibata Kengo | YOIMI CAMERA</title>
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-panel: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --accent: #d9534f; /* Manager accent: deep red/maroon */
+            --border: #333333;
+            --hover: #2a2a2a;
+            --sidebar-width: 260px;
+        }
+        body { margin: 0; font-family: "Helvetica Neue", Arial, sans-serif; background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar */
+        .sidebar { width: var(--sidebar-width); background-color: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 2000; }
+        .brand { padding: 20px; font-size: 18px; font-weight: bold; letter-spacing: 2px; border-bottom: 1px solid var(--border); transition: 0.3s; cursor: pointer; }
+        .brand:hover { background: var(--hover); }
+        .brand span { display: block; font-size: 10px; color: var(--text-muted); font-weight: normal; margin-top: 5px; }
+        .nav-menu { padding: 20px 0; flex: 1; }
+        .nav-item { padding: 12px 20px; cursor: pointer; transition: background 0.2s; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+        .nav-item:hover { background-color: var(--hover); }
+        .nav-item.active { background-color: var(--hover); border-left: 3px solid var(--accent); color: #fff; }
+        .badge { background-color: var(--accent); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 10px; }
+        
+        .user-profile { padding: 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background-color: #444; overflow: hidden; border: 1px solid var(--border); }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
+        .user-profile:hover .avatar img { filter: grayscale(0%); }
+        .user-info { font-size: 12px; }
+        .user-name { font-weight: bold; font-size: 14px; }
+
+        /* Main Content */
+        .main-content { flex: 1; display: flex; flex-direction: column; background: var(--bg-dark); min-width: 0; }
+        .header { height: 60px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; justify-content: space-between; background: var(--bg-panel); }
+        
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-btn { display: none; background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; padding: 5px; }
+        
+        .search-container { flex: 1; max-width: 400px; margin: 0 20px; }
+        .search-bar { background-color: var(--bg-dark); border: 1px solid var(--border); color: #fff; padding: 8px 15px; border-radius: 4px; width: 100%; box-sizing: border-box; outline: none; transition: 0.3s; }
+        .search-bar:focus { border-color: var(--accent); box-shadow: 0 0 5px rgba(217, 83, 79, 0.3); }
+        
+        .logout-btn { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 6px 15px; cursor: pointer; font-size: 11px; border-radius: 4px; transition: 0.3s; white-space: nowrap; }
+        .logout-btn:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.05); }
+
+        /* Email List Area */
+        .list-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        .list-header { padding: 15px 20px; border-bottom: 1px solid var(--border); font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: bold; background: var(--bg-dark); }
+        .email-list { flex: 1; overflow-y: auto; background: var(--bg-dark); }
+        .email-item { display: flex; padding: 15px 20px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; position: relative; }
+        .email-item:hover { background-color: #1a1a1a; }
+        .email-item.unread { background-color: #1a1616; border-left: 3px solid var(--accent); }
+        .email-item.active { background-color: #222; }
+        
+        .email-sender { width: 150px; font-weight: normal; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-muted); }
+        .email-item.unread .email-sender { color: #fff; font-weight: bold; }
+        .email-content { flex: 1; margin: 0 15px; overflow: hidden; }
+        .email-subject { font-size: 14px; font-weight: normal; margin-bottom: 4px; color: #bbb; display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .email-item.unread .email-subject { color: #fff; font-weight: bold; }
+        .email-snippet { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .email-date { font-size: 11px; color: var(--text-muted); width: 60px; text-align: right; }
+        
+        /* Reply Indicator */
+        .reply-mark { font-size: 12px; color: var(--accent); display: inline-flex; align-items: center; }
+        
+        /* Message View */
+        .message-view { flex: 1.5; padding: 0; background: var(--bg-panel); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; }
+        .msg-view-empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); text-align: center; }
+        .msg-view-empty i { font-size: 48px; margin-bottom: 20px; opacity: 0.2; }
+        
+        .msg-container { padding: 40px; overflow-y: auto; flex: 1; display: none; }
+        .msg-header { border-bottom: 1px solid var(--border); padding-bottom: 30px; margin-bottom: 30px; }
+        .msg-subject { font-size: 22px; font-weight: 300; margin: 0 0 20px 0; color: #fff; line-height: 1.4; }
+        .msg-meta { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--text-muted); }
+        .msg-meta strong { color: var(--text-main); font-weight: normal; }
+        .msg-body { font-size: 15px; line-height: 1.8; color: #ccc; white-space: pre-line; margin-top: 30px; }
+
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 1500; opacity: 0; transition: opacity 0.3s ease; }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+
+        @media (min-width: 1024px) {
+            .list-panel { width: 400px; border-right: 1px solid var(--border); }
+        }
+        
+        @media (max-width: 1023px) {
+            body { position: relative; }
+            .sidebar { position: fixed; left: -260px; top: 0; bottom: 0; transform: translateX(0); }
+            .sidebar.active { transform: translateX(260px); }
+            .menu-btn { display: block; }
+            .search-container { margin: 0 10px; }
+            .search-bar { font-size: 12px; padding: 6px 10px; }
+            
+            .message-view { position: fixed; top: 0; left: 0; right: 0; bottom: 0; border-left: none; display: none; transform: translateX(100%); transition: transform 0.3s ease; }
+            .message-view.active { display: flex; transform: translateX(0); }
+            
+            .email-sender { width: 100px; font-size: 13px; }
+            .email-subject { font-size: 13px; }
+            .email-snippet { font-size: 11px; }
+            
+            .msg-container { padding: 25px; }
+            .msg-subject { font-size: 20px; }
+        }
+        
+        .back-btn { display: none; align-items: center; gap: 8px; margin-bottom: 25px; background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 16px; cursor: pointer; border-radius: 4px; font-size: 13px; transition: 0.2s; }
+        .back-btn:hover { background: rgba(217, 83, 79, 0.1); }
+        @media (max-width: 1023px) { .back-btn { display: inline-flex; } }
+
+        /* Animation */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .msg-container.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+        /* Mobile Scroll Hide Logic */
+        @media (max-width: 1023px) {
+            .header-left { transition: width 0.3s, opacity 0.3s, margin 0.3s, gap 0.3s; overflow: hidden; }
+            .list-header { transition: max-height 0.3s, padding 0.3s, opacity 0.3s, border 0.3s; overflow: hidden; max-height: 60px; }
+            body.scrolled-down .header-left { width: 0; opacity: 0; margin: 0; gap: 0; }
+            body.scrolled-down .list-header { max-height: 0; padding-top: 0; padding-bottom: 0; opacity: 0; border: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="brand" onclick="location.reload()">
+            YOIMI CAMERA
+            <span>INTERNAL WEBMAIL PORTAL</span>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="switchFolder('inbox', this)">
+                Inbox <span class="badge" id="inbox-badge">0</span>
+            </div>
+            <div class="nav-item" onclick="switchFolder('sent', this)">
+                Sent Box
+            </div>
+            <div class="nav-item" onclick="switchFolder('drafts', this)">
+                Drafts <span class="badge" id="drafts-badge">0</span>
+            </div>
+            <div class="nav-item" onclick="switchFolder('trash', this)">Trash</div>
+            <div class="nav-item" style="color: #d9534f; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px; font-size: 11px; letter-spacing: 1px;">MANAGEMENT ALERTS</div>
+        </div>
+        <div class="user-profile">
+            <div class="avatar"><img src="images/Shibata Kengo.webp" alt="柴田 健吾"></div>
+            <div class="user-info">
+                <div class="user-name">柴田 健吾</div>
+                <div style="color: var(--text-muted);">Store Manager / CEO</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="header-left">
+                <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="Search messages...">
+            </div>
+            <button class="logout-btn" onclick="window.location.href='login.html'">LOGOUT</button>
+        </div>
+
+        <div style="display: flex; flex: 1; overflow: hidden;">
+            <div class="list-panel">
+                <div class="list-header" id="current-folder-name">Inbox</div>
+                <div class="email-list" id="email-list-container">
+                    <!-- Dynamic Content Loading -->
+                </div>
+            </div>
+            
+            <div class="message-view" id="message-view-panel">
+                <div class="msg-view-empty" id="empty-state">
+                    <i>✉</i>
+                    <p>メッセージを選択して表示します</p>
+                </div>
+                <div class="msg-container" id="msg-content">
+                    <!-- Dynamic Message Loading -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const emails = [
+            {
+                id: 8,
+                folder: 'inbox',
+                sender: '鳴海 朔',
+                email: 's.narumi@narumi-visual.jp',
+                date: '2016-10-24 21:30',
+                subject: '26日の山岳撮影への同行について',
+                snippet: '柴田店長 夜分に失礼します、鳴海です。26日に予定している山での撮影ですが……',
+                body: `柴田店長
+
+夜分に失礼します、鳴海です。
+
+26日に予定している山での撮影ですが、星野から共有されたロケハン資料と当日の気象予測を確認し、考えが変わりました。
+
+あの場所の霧と光の条件は、彼一人が制御するにはまだ難易度が高すぎます。
+何より、あの特異な条件下で Luminar 85mm がどのような挙動を見せるのか、私自身がこの目で見届け、彼に直接指導を行いたいと考えました。
+
+当日は私も同行し、玲奈さん、星野との3名体制で臨みます。
+私が現場に出ることで、より完成度の高い作品を YOIMI Cloud に納品できるはずです。
+
+店長、急な変更で申し訳ありませんが、承認をお願いします。
+私にとっても、彼にとっても、そして玲奈さんにとっても、意義のある撮影にしたいのです。`,
+                unread: false,
+                replied: true
+            },
+            {
+                id: 9,
+                folder: 'sent',
+                to: '鳴海 朔',
+                email: 's.narumi@narumi-visual.jp',
+                date: '2016-10-24 22:43',
+                subject: 'Re: 26日の山岳撮影への同行について',
+                snippet: '鳴海先生 夜分に失礼いたします。ヨイミカメラの柴田です。26日の同行の件……',
+                body: `鳴海先生
+
+夜分に失礼いたします。ヨイミカメラの柴田です。
+
+26日の同行の件、承知いたしました。
+先生自ら現場に立ち、星野にご指導いただけるとのこと、店長としてこれほど心強いことはありません。
+
+先生が仰る「あの場所にしか現れない光」という言葉、非常に胸に響きました。
+技術がデジタルへと移行しても、最終的に作品を決めるのは、写真家の執念と機材への信頼なのだと改めて教えられる思いです。
+
+星野も、先生の背中を間近で見られるこの機会を、何よりの学びに変えてくれるはずです。
+玲奈さんも、先生に撮っていただけるのなら、きっと素晴らしい表情を見せてくれることでしょう。
+
+当日は朝が早いですが、どうかお気をつけて。
+最高の作品が YOIMI Cloud に並ぶのを、私は店で楽しみにお待ちしております。
+
+よろしくお願いいたします。`,
+                unread: false
+            },
+            {
+                id: 3,
+                folder: 'sent',
+                to: '刈谷 哲',
+                email: 'yoimicamera_kariya@yoimi.co.jp',
+                date: '2016-10-25 09:30',
+                subject: '鳴海先生の過去インタビュー記事の再公開について',
+                snippet: '刈谷君 おはよう、柴田です。先日、店頭で「YOIMI Vision」Vol.34を手に……',
+                body: `刈谷君
+おはよう、柴田です。
+
+先日、店頭で「YOIMI Vision」Vol.34を手に取ったお客様から、鳴海先生のインタビューをもう一度読みたいという声を複数いただきました。
+先生の「Luminar 85mm」に対する独自の美学は、今読み返しても非常に興味深く、サイト上でもアーカイブとして再公開したいと考えています。
+
+刈谷君、過去の誌面データをWeb用に整形し、公開の準備を進めておいてくれないか。
+先生の弟子である星野君との対談形式になっているあの記事だ。
+
+それから、明日の隣町の山での撮影だが、先生は今回のデータをそのまま君のクラウドに上げるのを楽しみにされているよ。
+私も同行できれば良かったのだが、明日は店を空けられない。
+先生と玲奈さん、そして星野君のサポートを、システム側からしっかり支えてあげてほしい。よろしく頼む。`,
+                unread: false
+            },
+            {
+                id: 4,
+                folder: 'sent',
+                to: '鳴海 朔',
+                email: 's.narumi@narumi-visual.jp', 
+                date: '2016-10-25 11:00',
+                subject: '明日の撮影データの件',
+                snippet: '鳴海先生 お疲れ様です、柴田です。明日の山岳撮影について、データのバックアップ……',
+                body: `鳴海先生
+
+お疲れ様です、柴田です。
+
+明日の山岳撮影について、データのバックアップ体制のご報告です。
+以前お話しした通り、当店のウェブ管理者である刈谷が、お使いの『Luminar85』ディレクトリを最優先で同期するようシステムを調整致しました。
+
+山の上では回線が不安定になるかと存じますが、シャッターを切った先から順次クラウドへ安全に転送される手はずとなっております。
+先生が捉えるポートレートの瞬間を、私も心待ちにしております。
+
+明日は星野君も同行しますので、どうぞ存分に撮影に集中してください。`,
+                unread: false
+            },
+            {
+                id: 5,
+                folder: 'drafts',
+                sender: '柴田 健吾 (Self)',
+                to: 'yoimicamera_shibata@yoimi.co.jp, yoimicamera_kariya@yoimi.co.jp, yoimicamera_misaki@yoimi.co.jp, yoimicamera_hoshino@yoimi.co.jp',
+                date: '2016-10-30 23:15',
+                subject: '【下書き】報道されている件と、今後の営業について',
+                snippet: 'スタッフの皆、夜分にすまない。すでに報道で目にしていると思うが、鳴海先生が……',
+                body: `スタッフの皆、夜分にすまない。
+すでに報道で目にしていると思うが、鳴海先生が隣町の山で行方不明となった件で、ついに警察から実名で当店の関与を疑う報道がなされた。
+
+正直、今はまだ現実感が湧かない。あの日、先生は「最高の霧、最高の光が撮れそうだ」と、あんなに嬉しそうに仰っていたのに。三崎さんが丹念に磨いたレンズを手に、笑顔で出かけていった先生が、なぜ……。
+
+警察は私の管理責任や、データの隠蔽を執拗に疑っているようだ。だが、私たちが守るべきは顧客との信頼であり、先生の作品の尊厳だ。
+
+苦渋の決断だが、明日からヨイミカメラを臨時休業とする。
+三崎さん、機材の保護を優先してくれ。
+刈谷君、サイトの更新とシステムの守りを頼む。君だけが頼りだ。
+星野君、今は君の心中を思うと言葉が見つからない。だが、先生は必ず戻ってくると信じて待とう。
+
+店長として、皆を守れず本当に申し訳ない。`,
+                unread: false
+            },
+            {
+                id: 6,
+                folder: 'inbox',
+                sender: '宵見県警 捜査一課 荒谷',
+                email: 'araya_y_pol@pref.yoimi.jp',
+                date: '2016-10-29 14:20',
+                subject: '鳴海朔氏失踪に伴う捜査協力の再要請',
+                snippet: 'ヨイミカメラ 代表 柴田 健吾 様 宵見県警 捜査一課の荒谷です。先日の訪問の際は……',
+                body: `ヨイミカメラ 代表 柴田 健吾 様
+
+宵見県警 捜査一課の荒谷です。
+先日の訪問の際は、お忙しい中ご対応いただきありがとうございました。
+
+改めて、本件行方不明となっている鳴海朔氏が貴店で契約しているクラウドストレージ「YOIMI Cloud」内のデータ提出を強く要請いたします。
+行方不明直前の足取りを掴むため、該当ディレクトリの閲覧パスワードの開示は不可欠です。
+
+貴殿が仰る「顧客のプライバシー保護」という信条は理解いたしますが、事態は一刻を争います。正当な理由なき拒否は、捜査への支障とみなされ、不利益を被る可能性があることを重ねてご承知おきください。
+
+早急な回答を待っております。`,
+                unread: false,
+                replied: true
+            },
+            {
+                id: 7,
+                folder: 'inbox',
+                sender: '刈谷 哲',
+                email: 'yoimicamera_kariya@yoimi.co.jp',
+                date: '2016-10-29 16:05',
+                subject: '警察への対応とシステムの安全性について',
+                snippet: '店長、刈谷です。荒谷という刑事からのメール、私も拝見しました。かなり高圧的な……',
+                body: `店長、刈谷です。
+荒谷という刑事からのメール、私も拝見しました。
+
+かなり高圧的な文面ですが、決して屈しないでください。令状もない状態でのパスワード開示は、我々がお客様に約束している「情報の秘匿性」を根底から覆す行為です。一度でも安易な開示を行えば、ヨイミカメラの信頼は地に落ちます。
+
+鳴海さんの作品を守れるのは、店長、貴方だけです。刑事の荒谷はあのような言い方をしていますが、法的には我々に非はありません。
+
+私の構築したシステムは、管理者が口を割らない限り、警察の強引なハッキングも寄せ付けないように設計してあります。店長、先生の名誉のためにも、今は沈黙を守ってください。後のことは、すべて私が技術的にサポートします。`,
+                unread: false
+            },
+            {
+                id: 10,
+                folder: 'trash',
+                sender: '宵見新聞社 社会部 岡崎',
+                email: 'okazaki_t@yoimi-np.jp', 
+                date: '2016-10-29 11:05',
+                subject: '【至急】写真家・鳴海朔氏の行方不明に関する取材のお願い',
+                snippet: 'ヨイミカメラ 代表 柴田 健吾 様 突然のご連絡失礼いたします。宵見新聞社 社会部の岡崎と申します。……',
+                body: `ヨイミカメラ 代表 柴田 健吾 様
+
+突然のご連絡失礼いたします。宵見新聞社 社会部の岡崎と申します。
+
+現在、隣町の山岳地帯で捜索が続いている写真家・鳴海朔氏の件につきまして、貴店が「最後に鳴海氏と接触した関係先」として浮上しているとの情報を得ております。
+
+鳴海氏が貴店のクラウドシステム YOIMI Cloud に、失踪直前のデータをアップロードしていたという噂もあり、業界内でも大きな関心が寄せられています。
+
+つきましては、以下の点について柴田様の見解を伺いたく存じます。
+
+1. 26日の撮影当日、鳴海氏の様子に不審な点はなかったか
+2. 警察からクラウドデータの開示請求があった際、貴店が拒否しているという噂の真偽
+3. 鳴海氏と貴店スタッフ（特にアシスタントの星野氏や堂島氏）との関係性について
+
+本日中に一度お電話、もしくは直接店舗にお伺いして詳細をお聞きしたいと考えております。
+地元の文化を支えてきた貴店の立場として、憶測を打ち消すためにも公式なコメントをいただけますと幸いです。
+
+よろしくお願い申し上げます。
+
+--------------------------------------------------
+宵見新聞社 社会部 記者 岡崎 達也`,
+                unread: false
+            },
+            {
+                id: 11,
+                folder: 'sent',
+                to: '宵見新聞社 社会部 岡崎',
+                email: 'okazaki_t@yoimi-np.jp', 
+                date: '2016-10-29 14:20',
+                subject: 'Re: 【至急】写真家・鳴海朔氏の行方不明に関する取材のお願い',
+                snippet: '宵見新聞社 岡崎様 宵見カメラの柴田です。 貴紙からの取材依頼、拝受いたしました。……',
+                body: `宵見新聞社 岡崎様
+
+宵見カメラの柴田です。
+貴紙からの取材依頼、拝受いたしました。
+
+現在、警察の捜査が進行中であること、そして鳴海先生が貴店と深い関わりがあったことは事実です。しかし、先生のプライバシーと、お客様からお預かりしたデータの機密性を守ることは、写真店を営む我々の最も重要な責務です。
+
+つきましては、誠に申し訳ありませんが、現時点での詳細なコメントは差し控えさせていただきます。
+警察の捜査には全面的に協力する所存ですが、お客様のデータに関しては、法的な手続きを踏まない限り、開示することはできません。
+
+地元の文化を支えてきたという貴社の立場は理解しております。ですが、今は憶測を呼ぶような報道を控えていただき、静かに捜査の進展を見守っていただけますと幸いです。
+
+また何か公式な発表ができる段階になりましたら、こちらから改めてご連絡させていただきます。
+何卒ご理解のほど、よろしくお願い申し上げます。
+
+--------------------------------------------------
+ヨイミカメラ 店長 柴田 健吾`,
+                unread: false
+            },
+            {
+                id: 12,
+                folder: 'sent',
+                to: '宵見県警 捜査一課 荒谷',
+                email: 'araya_y_pol@pref.yoimi.jp', 
+                date: '2016-10-29 17:03',
+                subject: 'Re: 鳴海朔氏失踪事件に関する捜査協力のお願い（回答）',
+                snippet: '宵見県警 捜査一課 荒谷 様 お世話になっております。ヨイミカメラの柴田です。……',
+                body: `宵見県警 捜査一課
+荒谷 様
+
+お世話になっております。ヨイミカメラの柴田です。
+先ほどはメールをいただき、また昨日もお電話でお話しした通り、鳴海先生の安否については私も一刻も早い吉報を待っております。
+
+しかしながら、ご要求のあった「YOIMI Cloud」の管理者パスワード開示、および該当ディレクトリの閲覧につきましては、現時点ではお断りせざるを得ません。
+
+当店は創業以来、写真家の皆様との「信頼」を何よりの看板として営業してまいりました。お客様からお預かりしている未発表の作品データは、表現者にとって命にも等しいものです。捜査協力とはいえ、正当な令状なしに管理者が独断でこれを開示することは、当店が結んでいる利用規約、および写真業界における信義に反すると判断いたしました。
+
+鳴海先生の名誉とプライバシーを死守することも、店主である私の責務と考えております。
+一日も早い発見を願う気持ちに偽りはございませんが、何卒、当店の立場をご理解いただけますようお願い申し上げます。
+
+ヨイミカメラ 代表 柴田 健吾` ,
+                unread: false
+                
+            },
+            {
+                id: 13,
+                folder: 'inbox',
+                sender: '刈谷 哲',
+                email: 'yoimicamera_kariya@yoimi.co.jp',
+                date: '2016-10-25 10:05',
+                subject: 'Re: 鳴海先生の過去インタビュー記事の再公開について',
+                snippet: '柴田店長 承知いたしました。インタビュー記事については、すでに誌面スキャンデータから……',
+                body: `柴田店長
+
+承知いたしました。
+インタビュー記事については、すでに誌面スキャンデータからテキストを抽出し、Webアーカイブとしてのレイアウト調整を完了しました。
+鳴海さんの「道具への執着」は、デジタル化を急ぐ現代においてはある種のノスタルジーを感じさせますが、コンテンツとしての反響が高いのは理解できます。本日中にテスト公開用のURLを送付します。
+
+明日、10月26日の撮影についても、YOIMI Cloudの同期設定はすべて完了しています。
+山岳地帯の不安定な回線状況でも、優先的に鳴海さんのディレクトリへパケットが流れるよう最適化を施しました。
+
+明日は現場でのデータ転送が完了次第、私の端末にも通知が来るようにしてあります。
+システムは完璧です。店長は安心して、店での業務に専念してください。`,
+                unread: false,
+                replied: false
+            },
+            {
+                id: 14,
+                folder: 'inbox',
+                sender: '星野 悠',
+                email: 'yoimicamera_hoshino@yoimi.co.jp',
+                date: '2016-10-25 18:20',
+                subject: '明日の山岳撮影にかかる機材持ち出しと行程について',
+                snippet: '柴田店長、三崎さん お疲れ様です、星野です。明日の撮影に向けた機材の……',
+                body: `柴田店長、三崎さん
+
+お疲れ様です、星野です。
+
+明日の撮影に向けた機材の最終持ち出し報告です。
+鳴海先生からのご指示により、以下の機材を私が先行して車に積み込みます。
+
+- MUSEO 28-70mm F2.8 (サブカメラ用・玲奈さんオフショット撮影用)
+- ASTRAL 70-200mm F2.8 (予備)
+- 大型カーボン三脚、照明用レフ板一式
+
+※先生のメインである「Luminar 85mm F1.4」および予備バッテリー等は、全てご本人が直接管理されます。
+また、三崎さんに丁寧にメンテしていただいた機材は、すべて防湿ケースに収めました。
+
+明日は早朝4時に先生と玲奈さんをピックアップし、5時半には現地入りして霧の状況を確認します。
+私が先日のロケハンで掴んだデータ通りなら、夜明け直後に最高の光が差すはずです。先生に恥じないよう、アシスタントとして全力を尽くします。
+
+よろしくお願いいたします。`,
+                unread: false,
+                replied: false
+            }
+        ];
+
+        let currentFolder = 'inbox';
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        function renderList(folder) {
+            currentFolder = folder;
+            const container = document.getElementById('email-list-container');
+            const items = emails.filter(e => e.folder === folder).sort((a,b) => new Date(b.date) - new Date(a.date));
+            
+            let folderTitle = "Inbox";
+            if(folder === 'sent') folderTitle = "Sent Box";
+            if(folder === 'drafts') folderTitle = "Drafts";
+            if(folder === 'trash') folderTitle = "Trash";
+            document.getElementById('current-folder-name').innerText = folderTitle;
+            
+            container.innerHTML = items.map(e => `
+                <div class="email-item ${e.unread ? 'unread' : ''}" onclick="showMessage(${e.id}, this)">
+                    <div class="email-sender">${folder === 'inbox' ? e.sender : 'To: ' + (e.to || e.sender)}</div>
+                    <div class="email-content">
+                        <div class="email-subject">
+                            ${e.replied ? '<span class="reply-mark">↩</span>' : ''}
+                            ${e.subject}
+                        </div>
+                        <div class="email-snippet">${e.snippet}</div>
+                    </div>
+                    <div class="email-date">${e.date.split(' ')[0].substring(5)}</div>
+                </div>
+            `).join('');
+
+            // Update Badge
+            const inboxUnread = emails.filter(e => e.folder === 'inbox' && e.unread).length;
+            document.getElementById('inbox-badge').innerText = inboxUnread;
+            document.getElementById('inbox-badge').style.display = inboxUnread > 0 ? 'inline-block' : 'none';
+
+            const draftsCount = emails.filter(e => e.folder === 'drafts').length;
+            document.getElementById('drafts-badge').innerText = draftsCount;
+            document.getElementById('drafts-badge').style.display = draftsCount > 0 ? 'inline-block' : 'none';
+        }
+
+        function showMessage(id, element) {
+            const email = emails.find(e => e.id === id);
+            if (!email) return;
+
+            // Mark read
+            if (email.unread) {
+                email.unread = false;
+                renderList(currentFolder);
+            }
+
+            // UI Highlight
+            document.querySelectorAll('.email-item').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+
+            const contentArea = document.getElementById('msg-content');
+            const emptyState = document.getElementById('empty-state');
+            
+            emptyState.style.display = 'none';
+            contentArea.classList.add('active');
+
+            contentArea.innerHTML = `
+                <button class="back-btn" onclick="closeMessage()">← Back to List</button>
+                <div class="msg-header">
+                    <h2 class="msg-subject">${email.subject}</h2>
+                    <div class="msg-meta">
+                        <div><strong>From:</strong> ${email.sender || '柴田 健吾 (Self)'} &lt;${email.folder === 'inbox' ? email.email : 'yoimicamera_shibata@yoimi.co.jp'}&gt;</div>
+                        <div><strong>To:</strong> ${email.folder === 'inbox' ? '柴田 健吾 &lt;yoimicamera_shibata@yoimi.co.jp&gt;' : email.to + (email.email ? ' &lt;' + email.email + '&gt;' : '')}</div>
+                        <div style="margin-top:10px;"><strong>Date:</strong> ${email.date}</div>
+                    </div>
+                </div>
+                <div class="msg-body">${email.body.replace(/\n/g, '<br>')}</div>
+            `;
+
+            if (window.innerWidth < 1024) {
+                document.getElementById('message-view-panel').classList.add('active');
+            }
+        }
+
+        function closeMessage() {
+            document.getElementById('message-view-panel').classList.remove('active');
+        }
+
+        function switchFolder(folder, el) {
+            document.querySelectorAll('.nav-item').forEach(v => v.classList.remove('active'));
+            el.classList.add('active');
+            renderList(folder);
+            
+            // Close sidebar on mobile
+            if (window.innerWidth < 1024) {
+                toggleSidebar();
+            }
+
+            // Clear message view on desktop
+            if (window.innerWidth >= 1024) {
+                document.getElementById('empty-state').style.display = 'flex';
+                document.getElementById('msg-content').classList.remove('active');
+            }
+        }
+
+        // Init
+        window.onload = () => {
+            renderList('inbox');
+
+            // Mobile Scroll Logic
+            const emailList = document.getElementById('email-list-container');
+            let lastScrollTop = 0;
+            emailList.addEventListener('scroll', () => {
+                if (window.innerWidth >= 1024) return;
+                let st = emailList.scrollTop;
+                if (st > lastScrollTop && st > 30) {
+                    document.body.classList.add('scrolled-down');
+                } else if (st < lastScrollTop) {
+                    document.body.classList.remove('scrolled-down');
+                }
+                lastScrollTop = st;
+            });
+        };
+    </script>
+</body>
+</html>

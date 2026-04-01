@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ヨイミカメラ | YOIMI CAMERA</title>
+    <style>
+        /* 共通設定：プレミアムなダークテーマ */
+        body { margin: 0; font-family: "Helvetica Neue", "Arial", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif; background-color: #202020; color: #ffffff; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        
+        /* ヘッダー部（境界線を強調） */
+        header { background-color: #202020; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333333; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 5px; }
+        .logo span { font-size: 10px; font-weight: normal; letter-spacing: 2px; display: block; color: #888; }
+        
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 13px; letter-spacing: 1px; transition: color 0.3s; }
+        nav a:hover { color: #aaaaaa; }
+
+        /* ヘッダー右側（ログイン＆検索） */
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        
+        /* ログインボタン */
+        .login-btn { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 8px 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { background-color: #ffffff; color: #000000; }
+
+        /* 検索窓 */
+        .search-widget { position: relative; display: flex; align-items: center; }
+        .search-widget input[type="text"] { background-color: #222222; border: 1px solid #444444; color: #ffffff; padding: 10px 15px; width: 180px; font-size: 12px; outline: none; transition: border-color 0.3s; }
+        .search-widget input[type="text"]:focus { border-color: #ffffff; }
+        .search-widget button { background-color: #ffffff; color: #000000; border: none; padding: 10px 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .search-widget button:hover { background-color: #cccccc; }
+
+        /* 検索結果のドロップダウン表示 */
+        #searchResult { display: none; position: absolute; top: 100%; right: 0; background-color: #ffffff; color: #111111; border: 1px solid #eeeeee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 260px; padding: 20px; margin-top: 10px; font-size: 13px; z-index: 999; }
+
+        /* 重要なお知らせ（アコーディオン） */
+        .critical-notice { background-color: #1a1a1a; color: #ffffff; padding: 25px 30px; margin-bottom: 50px; cursor: pointer; border-left: 4px solid #d9534f; transition: background-color 0.3s; border: 1px solid #333333; border-left: 4px solid #d9534f; }
+        .critical-notice:hover { background-color: #252525; }
+        .critical-notice h2 { margin: 0; font-size: 16px; letter-spacing: 2px; display: flex; justify-content: space-between; align-items: center; font-weight: normal; }
+        .critical-notice .urgent-label { color: #d9534f; font-weight: bold; margin-right: 10px; }
+        
+        .notice-details { 
+            max-height: 0; 
+            overflow: hidden; 
+            transition: max-height 0.5s ease, opacity 0.5s ease, margin-top 0.5s ease; 
+            opacity: 0;
+            font-size: 14px; 
+            color: #aaaaaa; 
+            line-height: 1.8; 
+        }
+        .critical-notice.is-open .notice-details { 
+            max-height: 500px; 
+            opacity: 1; 
+            margin-top: 25px; 
+            padding-top: 25px; 
+            border-top: 1px solid #333333; 
+        }
+        .critical-notice.is-open { background-color: #151515; }
+        .notice-details strong { color: #ffffff; }
+
+        /* ヒーローセクション */
+        .hero { height: 60vh; background: linear-gradient(135deg, rgba(17, 17, 17, 0.7) 0%, rgba(51, 51, 51, 0.7) 100%), url('images/yomii camera top.webp'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: #ffffff; text-align: center; }
+        .hero h2 { font-size: 36px; font-weight: 300; letter-spacing: 10px; margin: 0; }
+        .hero p { font-size: 14px; letter-spacing: 2px; color: #aaaaaa; margin-top: 15px; }
+
+        /* コンテンツ領域（ヘッダーとの重なり防止のためmarginを拡大） */
+        .container { max-width: 900px; margin: 100px auto; padding: 0 20px; }
+
+        /* お知らせ一覧 */
+        .news-section h3 { font-size: 20px; font-weight: normal; border-bottom: 1px solid #333333; padding-bottom: 10px; margin-bottom: 20px; letter-spacing: 4px; color: #888888; }
+        .news-list { list-style: none; padding: 0; margin: 0; }
+        .news-list li { border-bottom: 1px solid #1a1a1a; padding: 20px 0; display: flex; align-items: center; }
+        .news-date { width: 150px; color: #666666; font-size: 14px; letter-spacing: 1px; }
+        .news-title { font-size: 15px; color: #cccccc; }
+        .news-title a { transition: color 0.3s; }
+        .news-title a:hover { color: #ffffff; }
+        
+        /* 日記へのリンク専用クラス */
+        .diary-link { color: #ffffff; text-decoration: underline; text-underline-offset: 4px; border-bottom: none; }
+        .diary-link:hover { color: #aaaaaa; }
+        
+        .news-title.urgent { color: #d9534f; font-weight: bold; }
+        .news-title.urgent a { text-decoration: underline; text-underline-offset: 4px; }
+        .news-title.urgent a:hover { color: #ff6b6b; }
+
+        /* フッター */
+        footer { background-color: #202020; color: #555555; text-align: center; padding: 30px 20px; font-size: 12px; margin-top: 80px; letter-spacing: 1px; border-top: 1px solid #333333; }
+
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px 20px; }
+            nav { margin: 15px 0; flex-wrap: wrap; justify-content: center; }
+            .header-right { width: 100%; flex-direction: column; gap: 10px; }
+            .search-widget { width: 100%; justify-content: center; }
+            .search-widget input[type="text"] { width: 60%; }
+            .news-list li { flex-direction: column; align-items: flex-start; }
+            .news-date { margin-bottom: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="index.html">YOIMI <span>ヨイミカメラ</span></a>
+        </div>
+        <nav>
+            <a href="notice.html">PRODUCTS</a>
+            <a href="notice.html">LENSES</a>
+            <a href="notice.html">RENTAL</a>
+            <a href="staff.html">STAFF</a>
+            <a href="company.html">ABOUT</a>
+        </nav>
+        <div class="header-right">
+            <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
+            <div class="search-widget">
+                <input type="text" id="keywordInput" placeholder="サイト内・商品検索">
+                <button onclick="executeSearch()">検索</button>
+                <div id="searchResult"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="hero">
+        <div>
+            <h2>CAPTURE THE TRUTH</h2>
+            <p>プロの表現を、もっと身近に。</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="criticalNotice" class="critical-notice" onclick="toggleNotice()">
+            <h2><span><span class="urgent-label">【重要】</span>営業休止および機材・データ返却について</span> <span id="toggleIcon">＋</span></h2>
+            <div id="noticeContent" class="notice-details">
+                平素はヨイミカメラをご利用いただき、誠にありがとうございます。<br>
+                突然ではございますが、諸般の事情により、当店舗は当面の間、営業を休止させていただきます。<br><br>
+                現在レンタル中の機材、および当店のクラウドサーバーにお預かりしている撮影データにつきましては、現在対応窓口を急ぎ準備中でございます。<br>
+                大変ご迷惑をおかけしますが、ご自身のデータの状況を確認される場合は、右上の<strong>「ログイン」</strong>よりマイページへアクセスし、状況をご確認ください。
+            </div>
+        </div>
+
+        <div class="news-section">
+            <h3>NEWS</h3>
+            <ul class="news-list">
+                <li>
+                    <span class="news-date">2016.10.31</span>
+                    <span class="news-title urgent"><a href="notice.html">【重要】臨時休業のお知らせ</a></span>
+                </li>
+                <li>
+                    <span class="news-date">2016.10.24</span>
+                    <span class="news-title"><a href="diary.html" class="diary-link">店長日記を更新しました（機材のファームウェアについて）</a></span>
+                </li>
+                <li>
+                    <span class="news-date">2016.10.18</span>
+                    <span class="news-title">ASTRAL A7X のレンタル在庫を追加しました。</span>
+                </li>
+                <li>
+                    <span class="news-date">2016.10.05</span>
+                    <span class="news-title"><a href="campaign.html" class="diary-link">秋のポートレート応援キャンペーン実施のお知らせ</a></span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2016 YOIMI CAMERA. All Rights Reserved.
+    </footer>
+
+    <script src="search.js"></script>
+    <script>
+        function toggleNotice() {
+            const notice = document.getElementById('criticalNotice');
+            const icon = document.getElementById('toggleIcon');
+            notice.classList.toggle('is-open');
+            if (notice.classList.contains('is-open')) {
+                icon.innerText = '－';
+            } else {
+                icon.innerText = '＋';
+            }
+        }
+    </script>
+</body>
+</html>

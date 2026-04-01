@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANAGER CLOUD | YOIMI CAMERA</title>
+    <style>
+        :root {
+            --bg-color: #202020;
+            --header-bg: #1a1a1a;
+            --accent-color: #5bc0de;
+            --text-color: #ffffff;
+            --border-color: #444;
+            --card-bg: #2a2a2a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ヘッダー部（index.htmlと同期） */
+        header { background-color: #202020; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333333; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 5px; }
+        .logo span { font-size: 10px; font-weight: normal; letter-spacing: 2px; display: block; color: #888; }
+        .logo a { color: #fff; text-decoration: none; }
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 13px; letter-spacing: 1px; color: #ffffff; text-decoration: none; transition: color 0.3s; }
+        nav a:hover { color: #aaaaaa; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .login-btn { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 8px 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { background-color: #ffffff; color: #000000; }
+        .search-widget { position: relative; display: flex; align-items: center; }
+        .search-widget input[type="text"] { background-color: #222222; border: 1px solid #444444; color: #ffffff; padding: 10px 15px; width: 180px; font-size: 12px; outline: none; transition: border-color 0.3s; }
+        .search-widget input[type="text"]:focus { border-color: #ffffff; }
+        .search-widget button { background-color: #ffffff; color: #000000; border: none; padding: 10px 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .search-widget button:hover { background-color: #cccccc; }
+        #searchResult { display: none; position: absolute; top: 100%; right: 0; background-color: #ffffff; color: #111111; border: 1px solid #eeeeee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 260px; padding: 20px; margin-top: 10px; font-size: 13px; z-index: 999; }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .cloud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .user-info h1 {
+            margin: 0;
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+
+        .user-info p {
+            margin: 5px 0 0;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .storage-status {
+            text-align: right;
+            width: 300px;
+        }
+
+        .storage-bar {
+            height: 10px;
+            background: #444;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .storage-fill {
+            height: 100%;
+            background: var(--accent-color);
+            width: 0%;
+        }
+
+        .storage-text {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+        }
+
+        .file-list-section {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 20px;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 15px;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 0;
+            color: #666;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .recent-activity {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        .activity-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .activity-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .activity-time {
+            font-size: 11px;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .activity-desc {
+            font-size: 13px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-size: 14px;
+            border-top: 1px solid #333;
+            margin-top: 80px;
+        }
+
+        /* モバイル対応（ヘッダー） */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px 20px; }
+            nav { margin: 15px 0; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .header-right { width: 100%; flex-direction: column; gap: 10px; }
+            .search-widget { width: 100%; justify-content: center; }
+            .search-widget input[type="text"] { width: 60%; }
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .cloud-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .storage-status {
+                width: 100%;
+                margin-top: 20px;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="index.html">YOIMI <span>ヨイミカメラ</span></a></div>
+        <nav>
+            <a href="notice.html">PRODUCTS</a><a href="notice.html">LENSES</a><a href="notice.html">RENTAL</a><a href="staff.html">STAFF</a><a href="company.html">ABOUT</a>
+        </nav>
+        <div class="header-right">
+            <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
+            <div class="search-widget">
+                <input type="text" id="keywordInput" placeholder="サイト内・商品検索">
+                <button onclick="executeSearch()">検索</button>
+                <div id="searchResult"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="cloud-header">
+            <div class="user-info">
+                <h1>MASTER CLOUD <span style="font-size: 18px; color: var(--accent-color);">Admin</span></h1>
+                <p>Welcome back, <strong>柴田 健吾</strong> 様 (Member ID: Manager_Private)</p>
+            </div>
+            <div class="storage-status">
+                <div class="storage-text">0.00 TB / 5.00 TB used (0%)</div>
+                <div class="storage-bar">
+                    <div class="storage-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="file-list-section">
+                <div class="section-header">
+                    <h2>FILE MANAGER</h2>
+                    <span style="font-size: 12px; color: var(--accent-color);">Total: 0 files</span>
+                </div>
+                <ul class="file-list">
+                    <li class="empty-state">
+                        ファイルが存在しません。<br>
+                        データのアップロードを開始してください。
+                    </li>
+                </ul>
+            </div>
+
+            <div class="recent-activity">
+                <div class="section-header">
+                    <h2>LOGS</h2>
+                </div>
+                <ul class="activity-list">
+                    <li class="activity-item">
+                        <span class="activity-time">2016.10.31</span>
+                        <span class="activity-desc">システムにログインしました</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>&copy; 2016 YOIMI CAMERA Cloud Service Division. All Rights Reserved.</footer>
+    <script src="search.js"></script>
+</body>
+</html>

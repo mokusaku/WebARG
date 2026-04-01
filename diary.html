@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>機材のメンテナンスと秋の撮影シーズン | 店長日記 | YOIMI CAMERA</title>
+    <style>
+        /* 共通設定：プレミアムなダークテーマ */
+        body { margin: 0; font-family: "Helvetica Neue", "Arial", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif; background-color: #202020; color: #ffffff; line-height: 1.8; }
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.6; }
+        
+        /* ヘッダー部 */
+        header { background-color: #202020; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333333; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 5px; }
+        .logo span { font-size: 10px; font-weight: normal; letter-spacing: 2px; display: block; color: #888; }
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 13px; letter-spacing: 1px; transition: color 0.3s; }
+        nav a:hover { color: #aaaaaa; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .login-btn { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 8px 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { background-color: #ffffff; color: #000000; }
+        .search-widget { position: relative; display: flex; align-items: center; }
+        .search-widget input[type="text"] { background-color: #222222; border: 1px solid #444444; color: #ffffff; padding: 10px 15px; width: 180px; font-size: 12px; outline: none; transition: border-color 0.3s; }
+        .search-widget input[type="text"]:focus { border-color: #ffffff; }
+        .search-widget button { background-color: #ffffff; color: #000000; border: none; padding: 10px 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .search-widget button:hover { background-color: #cccccc; }
+        #searchResult { display: none; position: absolute; top: 100%; right: 0; background-color: #ffffff; color: #111111; border: 1px solid #eeeeee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 260px; padding: 20px; margin-top: 10px; font-size: 13px; z-index: 999; }
+
+        /* コンテンツ領域 */
+        .container { max-width: 800px; margin: 100px auto; padding: 0 20px; }
+        .diary-post { margin-bottom: 80px; }
+        .diary-header { border-bottom: 1px solid #444444; padding-bottom: 25px; margin-bottom: 40px; }
+        .diary-date { color: #888888; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
+        .diary-title { font-size: 28px; font-weight: normal; color: #ffffff; margin: 15px 0 0 0; letter-spacing: 1px; }
+        .diary-body { font-size: 16px; color: #cccccc; }
+        .diary-body p { margin-bottom: 30px; }
+        .back-link { text-align: center; margin-top: 80px; }
+        .back-link a { display: inline-block; background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 15px 40px; font-size: 13px; font-weight: bold; letter-spacing: 2px; transition: all 0.3s; }
+        .back-link a:hover { background-color: #ffffff; color: #000000; }
+        
+        .pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 60px; border-top: 1px solid #444; padding-top: 30px; font-size: 13px; letter-spacing: 1px; }
+        .pagination a { color: #aaaaaa; transition: color 0.3s; }
+        .pagination a:hover { color: #ffffff; }
+        .pagination .prev, .pagination .next { width: 33%; }
+        .pagination .next { text-align: right; }
+        .pagination .list { width: 34%; text-align: center; }
+
+        footer { background-color: #202020; color: #555555; text-align: center; padding: 40px 20px; font-size: 11px; margin-top: 120px; letter-spacing: 2px; border-top: 1px solid #333333; }
+
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px 20px; height: auto; }
+            nav { margin: 15px 0; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .header-right { width: 100%; flex-direction: column; gap: 15px; }
+            .search-widget { width: 100%; justify-content: center; }
+            .search-widget input[type="text"] { width: 60%; }
+            .diary-title { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="index.html">YOIMI <span>ヨイミカメラ</span></a></div>
+        <nav>
+            <a href="notice.html">PRODUCTS</a><a href="notice.html">LENSES</a><a href="notice.html">RENTAL</a><a href="staff.html">STAFF</a><a href="company.html">ABOUT</a>
+        </nav>
+        <div class="header-right">
+            <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
+            <div class="search-widget">
+                <input type="text" id="keywordInput" placeholder="サイト内・商品検索">
+                <button onclick="executeSearch()">検索</button>
+                <div id="searchResult"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <article class="diary-post">
+            <div class="diary-header">
+                <div class="diary-date">2016.10.24 Update</div>
+                <h1 class="diary-title">機材のメンテナンスと、秋の撮影シーズン</h1>
+            </div>
+            <div class="diary-body">
+                <p>こんばんは、店長の柴田です。<br>秋の撮影シーズン真っ只中ということもあり、おかげさまで多くのレンタル機材がフル稼働の状態です。皆様、いつもご利用ありがとうございます。</p>
+                <p>今日は定休日を利用して、人気の小型ストロボ『AuraLight 100Pro』全台の点検とファームウェアの更新を行いました。<br>メーカーから本日リリースされたVer2.1へのアップデートですが、色温度の安定性が向上するため、ポートレート撮影には欠かせない調整です。これで明日からも、安心してお客様にお貸出しできます。</p>
+                <p>作業を進めていると、機材担当の三崎も遅くまで残って作業を手伝ってくれました。<br>明後日から常連の鳴海先生が撮影に出られるそうで、先生が使用される予定の機材を一台一台、丁寧に磨き上げています。<br>「先生は旧型のマニュアルレンズ『Luminar 85mm』しか使わないのに、なぜか最新の『ASTRAL』のボディまでピカピカにしてますよ」と三崎は笑っていましたが、あの先生の異常なまでの光へのこだわりに応えるには、それくらいが丁度いいのかもしれません。お弟子の星野君も『師匠のLuminar愛は度を超している』とブログでこぼしていましたが（笑）、あの徹底した姿勢こそが、鳴海先生の作品の源泉なのでしょう。</p>
+                <p>さて、明日も朝から冷え込みそうです。皆様も体調にはお気をつけて。<br>今夜はこのあたりで失礼いたします。良い写真ライフを。</p>
+            </div>
+        </article>
+        <div class="pagination">
+            <div class="prev"><a href="diary3.html">&laquo; 秋の気配と、光を追い求める情熱</a></div>
+            <div class="list"><a href="index.html">トップページへ戻る</a></div>
+            <div class="next"></div>
+        </div>
+    </div>
+    <footer>&copy; 2016 YOIMI CAMERA. All Rights Reserved.</footer>
+
+    <script src="search.js"></script>
+</body>
+</html>

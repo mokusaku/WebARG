@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会社情報 | YOIMI CAMERA</title>
+    <style>
+        /* 共通設定：プレミアムなダークテーマ */
+        body { margin: 0; font-family: "Helvetica Neue", "Arial", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif; background-color: #202020; color: #ffffff; line-height: 1.8; }
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.6; }
+        
+        /* ヘッダー部 */
+        header { background-color: #202020; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333333; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 5px; }
+        .logo span { font-size: 10px; font-weight: normal; letter-spacing: 2px; display: block; color: #888; }
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 13px; letter-spacing: 1px; transition: color 0.3s; }
+        nav a:hover { color: #aaaaaa; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .login-btn { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 8px 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { background-color: #ffffff; color: #000000; }
+        .search-widget { position: relative; display: flex; align-items: center; }
+        .search-widget input[type="text"] { background-color: #222222; border: 1px solid #444444; color: #ffffff; padding: 10px 15px; width: 180px; font-size: 12px; outline: none; transition: border-color 0.3s; }
+        .search-widget input[type="text"]:focus { border-color: #ffffff; }
+        .search-widget button { background-color: #ffffff; color: #000000; border: none; padding: 10px 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .search-widget button:hover { background-color: #cccccc; }
+        #searchResult { display: none; position: absolute; top: 100%; right: 0; background-color: #ffffff; color: #111111; border: 1px solid #eeeeee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 260px; padding: 20px; margin-top: 10px; font-size: 13px; z-index: 999; }
+
+        /* コンテンツ領域 */
+        .container { max-width: 900px; margin: 100px auto; padding: 0 20px; min-height: 60vh; }
+        .company-header { border-bottom: 2px solid #333333; padding-bottom: 30px; margin-bottom: 60px; text-align: left; }
+        .company-header span { color: #888888; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .company-header h1 { font-size: 32px; font-weight: 300; letter-spacing: 3px; margin: 0; }
+        
+        .info-table { width: 100%; border-collapse: collapse; margin-bottom: 80px; }
+        .info-table tr { border-bottom: 1px solid #333333; }
+        .info-table th { text-align: left; padding: 25px 0; font-size: 14px; font-weight: normal; color: #888888; width: 30%; letter-spacing: 1px; vertical-align: top; }
+        .info-table td { padding: 25px 0; font-size: 16px; color: #ffffff; line-height: 1.8; }
+        .info-table td strong { font-weight: normal; border-bottom: 1px solid #666; }
+        
+        .business-list { margin: 0; padding: 0; list-style: none; }
+        .business-list li { margin-bottom: 10px; font-size: 16px; color: #ffffff; display: flex; align-items: baseline; }
+        .business-list li::before { content: "・"; color: #888; margin-right: 10px; }
+        
+        .back-link { text-align: center; margin-top: 100px; }
+        .back-link a { display: inline-block; background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 15px 40px; font-size: 13px; font-weight: bold; letter-spacing: 2px; transition: all 0.3s; }
+        .back-link a:hover { background-color: #ffffff; color: #000000; }
+
+        footer { background-color: #202020; color: #555555; text-align: center; padding: 40px 20px; font-size: 11px; margin-top: 120px; letter-spacing: 2px; border-top: 1px solid #333333; }
+
+        /* 役員・代表挨拶セクション */
+        .ceo-section { display: flex; gap: 50px; align-items: flex-start; margin-bottom: 80px; background-color: #2a2a2a; padding: 50px; border-radius: 4px; border: 1px solid #333; }
+        .ceo-image { flex: 0 0 300px; }
+        .ceo-image img { width: 100%; border-radius: 2px; filter: grayscale(20%); transition: filter 0.5s; }
+        .ceo-image img:hover { filter: grayscale(0%); }
+        .ceo-text h2 { font-size: 20px; font-weight: 300; letter-spacing: 2px; color: #888; margin-top: 0; }
+        .ceo-text blockquote { font-size: 24px; font-weight: 300; letter-spacing: 1px; color: #ffffff; line-height: 1.6; margin: 30px 0; border: none; padding: 0; }
+        .ceo-text p { font-size: 15px; color: #cccccc; margin-bottom: 20px; }
+        .ceo-name-sign { margin-top: 40px; font-size: 14px; text-align: right; letter-spacing: 2px; }
+        .ceo-name-sign strong { font-size: 18px; margin-left: 15px; font-weight: normal; }
+
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px 20px; height: auto; }
+            nav { margin: 15px 0; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .header-right { width: 100%; flex-direction: column; gap: 15px; }
+            .search-widget { width: 100%; justify-content: center; }
+            .search-widget input[type="text"] { width: 60%; }
+            .info-table th { width: 100%; display: block; padding-bottom: 5px; }
+            .info-table td { width: 100%; display: block; padding-top: 5px; }
+            .ceo-section { flex-direction: column; padding: 30px 20px; gap: 30px; }
+            .ceo-image { flex: 0 0 auto; width: 100%; }
+            .ceo-text blockquote { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="index.html">YOIMI <span>ヨイミカメラ</span></a></div>
+        <nav>
+            <a href="notice.html">PRODUCTS</a><a href="notice.html">LENSES</a><a href="notice.html">RENTAL</a><a href="staff.html">STAFF</a><a href="company.html">ABOUT</a>
+        </nav>
+        <div class="header-right">
+            <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
+            <div class="search-widget">
+                <input type="text" id="keywordInput" placeholder="サイト内・商品検索">
+                <button onclick="executeSearch()">検索</button>
+                <div id="searchResult"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="company-header">
+            <span>Corporate Profile</span>
+            <h1>会社情報</h1>
+        </div>
+
+        <div class="ceo-section">
+            <div class="ceo-image">
+                <img src="images/Shibata Kengo.webp" alt="代表取締役 柴田 健吾">
+            </div>
+            <div class="ceo-text">
+                <h2>Top Message</h2>
+                <blockquote>「その一枚に、真実を。その一瞬に、永遠を。」</blockquote>
+                <p>ヨイミカメラは、プロフェッショナルが求める究極の道具と、大切なデータを守り抜くためのソリューションを提供し続けてきました。変わりゆく時代の中で、我々が守るべきは技術の継承と、クリエイターが創作に没頭できる完璧な環境です。</p>
+                <div class="ceo-name-sign">代表取締役<strong>柴田 健吾</strong></div>
+                <div style="margin-top: 30px; border-top: 1px dashed #444; padding-top: 20px;">
+                    <div style="font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">Profile</div>
+                    <p style="font-size: 14px; color: #bbb; line-height: 1.8; margin: 0;">
+                        1966.12.16 生まれ<br>
+                        光蝕大学を首席で卒業。東京の有名カメラ店で7年間勤務後に地元の宵見町へ帰郷し株式会社ヨイミを設立。
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <table class="info-table">
+            <tr>
+                <th>会社名</th>
+                <td>株式会社ヨイミ</td>
+            </tr>
+            <tr>
+                <th>店舗名</th>
+                <td>ヨイミカメラ</td>
+            </tr>
+            <tr>
+                <th>代表取締役</th>
+                <td>柴田 健吾</td>
+            </tr>
+            <tr>
+                <th>所在地</th>
+                <td>〒100-3401 宵見県 宵見町 本町2-4-1</td>
+            </tr>
+            <tr>
+                <th>連絡先</th>
+                <td>yoimicamera_shibata@yoimi.co.jp</td>
+            </tr>
+            <tr>
+                <th>設立</th>
+                <td>1995年 4月</td>
+            </tr>
+            <tr>
+                <th>資本金</th>
+                <td>500万円</td>
+            </tr>
+            <tr>
+                <th>従業員数</th>
+                <td>3名</td>
+            </tr>
+            <tr>
+                <th>事業内容</th>
+                <td>
+                    <ul class="business-list">
+                        <li>撮影機材（カメラ・レンズ・照明機材等）のレンタル業務</li>
+                        <li>プロフェッショナル向け高セキュリティ・クラウドストレージの提供・運用</li>
+                        <li>撮影機材の保守メンテナンスおよび中古販売</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>主要取引先</th>
+                <td>宵見県内フリーランスカメラマン、各種デザイン制作会社</td>
+            </tr>
+            <tr>
+                <th>取引銀行</th>
+                <td>宵見信用金庫 本店</td>
+            </tr>
+        </table>
+
+        <div class="back-link"><a href="index.html">トップページへ戻る</a></div>
+    </div>
+
+    <footer>&copy; 2016 YOIMI CAMERA. All Rights Reserved.</footer>
+
+    <script src="search.js"></script>
+</body>
+</html>
