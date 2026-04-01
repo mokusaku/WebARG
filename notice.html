@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【重要】営業休止および機材・データ返却について | YOIMI CAMERA</title>
+    <style>
+        /* 共通設定：プレミアムなダークテーマ */
+        body { margin: 0; font-family: "Helvetica Neue", "Arial", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif; background-color: #202020; color: #ffffff; line-height: 1.8; }
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.6; }
+        
+        /* ヘッダー部 */
+        header { background-color: #202020; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333333; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 5px; }
+        .logo span { font-size: 10px; font-weight: normal; letter-spacing: 2px; display: block; color: #888; }
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 13px; letter-spacing: 1px; transition: color 0.3s; }
+        nav a:hover { color: #aaaaaa; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .login-btn { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 8px 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { background-color: #ffffff; color: #000000; }
+        .search-widget { position: relative; display: flex; align-items: center; }
+        .search-widget input[type="text"] { background-color: #222222; border: 1px solid #444444; color: #ffffff; padding: 10px 15px; width: 180px; font-size: 12px; outline: none; transition: border-color 0.3s; }
+        .search-widget input[type="text"]:focus { border-color: #ffffff; }
+        .search-widget button { background-color: #ffffff; color: #000000; border: none; padding: 10px 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .search-widget button:hover { background-color: #cccccc; }
+        #searchResult { display: none; position: absolute; top: 100%; right: 0; background-color: #ffffff; color: #111111; border: 1px solid #eeeeee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 260px; padding: 20px; margin-top: 10px; font-size: 13px; z-index: 999; }
+
+        /* コンテンツ領域 */
+        .container { max-width: 800px; margin: 100px auto; padding: 0 20px; min-height: 60vh; }
+        .notice-header { border-bottom: 1px solid #333333; padding-bottom: 30px; margin-bottom: 50px; }
+        .notice-date { color: #888888; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px; display: block; }
+        .notice-title { font-size: 28px; font-weight: normal; color: #ffffff; margin: 0; letter-spacing: 1px; color: #d9534f; }
+        
+        .notice-body { font-size: 16px; color: #cccccc; line-height: 2.0; }
+        .notice-body h3 { font-size: 20px; color: #ffffff; margin-top: 50px; margin-bottom: 20px; border-left: 3px solid #d9534f; padding-left: 15px; }
+        .notice-body p { margin-bottom: 25px; }
+        .notice-body strong { color: #ffffff; }
+        
+        .action-box { background-color: #1a1a1a; padding: 30px; border: 1px solid #333333; margin-top: 40px; }
+        .action-box p { margin: 0 0 20px 0; }
+        .login-link { display: inline-block; background-color: #ffffff; color: #000000; padding: 15px 40px; font-size: 14px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s; }
+        .login-link:hover { background-color: #cccccc; }
+
+        .back-link { text-align: center; margin-top: 80px; }
+        .back-link a { display: inline-block; background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 15px 40px; font-size: 13px; font-weight: bold; letter-spacing: 2px; transition: all 0.3s; }
+        .back-link a:hover { background-color: #ffffff; color: #000000; }
+
+        footer { background-color: #202020; color: #555555; text-align: center; padding: 40px 20px; font-size: 11px; margin-top: 120px; letter-spacing: 2px; border-top: 1px solid #333333; }
+
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px 20px; height: auto; }
+            nav { margin: 15px 0; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .header-right { width: 100%; flex-direction: column; gap: 15px; }
+            .search-widget { width: 100%; justify-content: center; }
+            .search-widget input[type="text"] { width: 60%; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="index.html">YOIMI <span>ヨイミカメラ</span></a></div>
+        <nav><a href="notice.html">PRODUCTS</a><a href="notice.html">LENSES</a><a href="notice.html">RENTAL</a><a href="staff.html">STAFF</a><a href="company.html">ABOUT</a></nav>
+        <div class="header-right">
+            <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
+            <div class="search-widget">
+                <input type="text" id="keywordInput" placeholder="サイト内・商品検索">
+                <button onclick="executeSearch()">検索</button>
+                <div id="searchResult"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <article class="notice-article">
+            <div class="notice-header">
+                <span class="notice-date">2016.10.31</span>
+                <h1 class="notice-title">【重要】営業休止および機材・データ返却について</h1>
+            </div>
+            
+            <div class="notice-body">
+                <p>平素はヨイミカメラをご利用いただき、誠にありがとうございます。</p>
+                <p>突然ではございますが、諸般の事情により、当店舗は当面の間、営業を休止させていただきます。ご利用の皆様には多大なるご不便をおかけすることを深くお詫び申し上げます。</p>
+
+                <h3>1. レンタル中機材の返却について</h3>
+                <p>現在機材をレンタル中のお客様につきましては、当初の返却予定日にかかわらず、可能な限り速やかな返却をお願いしております。返却方法は郵送（着払い）のみ受け付けております。店舗へお持ち込みいただいても対応いたしかねますので、あらかじめご了承ください。</p>
+
+                <h3>2. 撮影データのダウンロードについて</h3>
+                <p>当店のクラウドサーバーにお預かりしている撮影データにつきましては、<strong>2016年11月末</strong>をもってサーバーへのアクセスができなくなる予定です。大切なデータはお早めにマイページよりダウンロードしていただきますようお願い申し上げます。</p>
+
+                <h3>3. 今後の対応窓口について</h3>
+                <p>現在、個別のお問い合わせに対応するための専用窓口を急ぎ準備中でございます。進展がございましたら、本ページまたはマイページを通じてお知らせいたします。</p>
+
+                <div class="action-box">
+                    <p>ご自身のデータの状況、機材返却のステータスを確認される場合は、マイページへアクセスしてください。</p>
+                    <a href="login.html" class="login-link">マイページへログイン</a>
+                </div>
+            </div>
+        </article>
+
+        <div class="back-link"><a href="index.html">トップページへ戻る</a></div>
+    </div>
+
+    <footer>&copy; 2016 YOIMI CAMERA. All Rights Reserved.</footer>
+
+    <script src="search.js"></script>
+</body>
+</html>

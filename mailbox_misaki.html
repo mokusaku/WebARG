@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebMail - Shibata Kengo | YOIMI CAMERA</title>
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-panel: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --accent: #d9534f; /* Manager accent: deep red/maroon */
+            --border: #333333;
+            --hover: #2a2a2a;
+            --sidebar-width: 260px;
+        }
+        body { margin: 0; font-family: "Helvetica Neue", Arial, sans-serif; background-color: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar */
+        .sidebar { width: var(--sidebar-width); background-color: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 2000; }
+        .brand { padding: 20px; font-size: 18px; font-weight: bold; letter-spacing: 2px; border-bottom: 1px solid var(--border); transition: 0.3s; cursor: pointer; }
+        .brand:hover { background: var(--hover); }
+        .brand span { display: block; font-size: 10px; color: var(--text-muted); font-weight: normal; margin-top: 5px; }
+        .nav-menu { padding: 20px 0; flex: 1; }
+        .nav-item { padding: 12px 20px; cursor: pointer; transition: background 0.2s; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+        .nav-item:hover { background-color: var(--hover); }
+        .nav-item.active { background-color: var(--hover); border-left: 3px solid var(--accent); color: #fff; }
+        .badge { background-color: var(--accent); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 10px; }
+        
+        .user-profile { padding: 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background-color: #444; overflow: hidden; border: 1px solid var(--border); }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
+        .user-profile:hover .avatar img { filter: grayscale(0%); }
+        .user-info { font-size: 12px; }
+        .user-name { font-weight: bold; font-size: 14px; }
+
+        /* Main Content */
+        .main-content { flex: 1; display: flex; flex-direction: column; background: var(--bg-dark); min-width: 0; }
+        .header { height: 60px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; justify-content: space-between; background: var(--bg-panel); }
+        
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-btn { display: none; background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; padding: 5px; }
+        
+        .search-container { flex: 1; max-width: 400px; margin: 0 20px; }
+        .search-bar { background-color: var(--bg-dark); border: 1px solid var(--border); color: #fff; padding: 8px 15px; border-radius: 4px; width: 100%; box-sizing: border-box; outline: none; transition: 0.3s; }
+        .search-bar:focus { border-color: var(--accent); box-shadow: 0 0 5px rgba(217, 83, 79, 0.3); }
+        
+        .logout-btn { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 6px 15px; cursor: pointer; font-size: 11px; border-radius: 4px; transition: 0.3s; white-space: nowrap; }
+        .logout-btn:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.05); }
+
+        /* Email List Area */
+        .list-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        .list-header { padding: 15px 20px; border-bottom: 1px solid var(--border); font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: bold; background: var(--bg-dark); }
+        .email-list { flex: 1; overflow-y: auto; background: var(--bg-dark); }
+        .email-item { display: flex; padding: 15px 20px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; position: relative; }
+        .email-item:hover { background-color: #1a1a1a; }
+        .email-item.unread { background-color: #1a1616; border-left: 3px solid var(--accent); }
+        .email-item.active { background-color: #222; }
+        
+        .email-sender { width: 150px; font-weight: normal; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-muted); }
+        .email-item.unread .email-sender { color: #fff; font-weight: bold; }
+        .email-content { flex: 1; margin: 0 15px; overflow: hidden; }
+        .email-subject { font-size: 14px; font-weight: normal; margin-bottom: 4px; color: #bbb; display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .email-item.unread .email-subject { color: #fff; font-weight: bold; }
+        .email-snippet { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .email-date { font-size: 11px; color: var(--text-muted); width: 60px; text-align: right; }
+        
+        /* Reply Indicator */
+        .reply-mark { font-size: 12px; color: var(--accent); display: inline-flex; align-items: center; }
+        
+        /* Message View */
+        .message-view { flex: 1.5; padding: 0; background: var(--bg-panel); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; }
+        .msg-view-empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); text-align: center; }
+        .msg-view-empty i { font-size: 48px; margin-bottom: 20px; opacity: 0.2; }
+        
+        .msg-container { padding: 40px; overflow-y: auto; flex: 1; display: none; }
+        .msg-header { border-bottom: 1px solid var(--border); padding-bottom: 30px; margin-bottom: 30px; }
+        .msg-subject { font-size: 22px; font-weight: 300; margin: 0 0 20px 0; color: #fff; line-height: 1.4; }
+        .msg-meta { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--text-muted); }
+        .msg-meta strong { color: var(--text-main); font-weight: normal; }
+        .msg-body { font-size: 15px; line-height: 1.8; color: #ccc; white-space: pre-line; margin-top: 30px; }
+
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 1500; opacity: 0; transition: opacity 0.3s ease; }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+
+        @media (min-width: 1024px) {
+            .list-panel { width: 400px; border-right: 1px solid var(--border); }
+        }
+        
+        @media (max-width: 1023px) {
+            body { position: relative; }
+            .sidebar { position: fixed; left: -260px; top: 0; bottom: 0; transform: translateX(0); }
+            .sidebar.active { transform: translateX(260px); }
+            .menu-btn { display: block; }
+            .search-container { margin: 0 10px; }
+            .search-bar { font-size: 12px; padding: 6px 10px; }
+            
+            .message-view { position: fixed; top: 0; left: 0; right: 0; bottom: 0; border-left: none; display: none; transform: translateX(100%); transition: transform 0.3s ease; }
+            .message-view.active { display: flex; transform: translateX(0); }
+            
+            .email-sender { width: 100px; font-size: 13px; }
+            .email-subject { font-size: 13px; }
+            .email-snippet { font-size: 11px; }
+            
+            .msg-container { padding: 25px; }
+            .msg-subject { font-size: 20px; }
+        }
+        
+        .back-btn { display: none; align-items: center; gap: 8px; margin-bottom: 25px; background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 16px; cursor: pointer; border-radius: 4px; font-size: 13px; transition: 0.2s; }
+        .back-btn:hover { background: rgba(217, 83, 79, 0.1); }
+        @media (max-width: 1023px) { .back-btn { display: inline-flex; } }
+
+        /* Animation */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .msg-container.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+        /* Mobile Scroll Hide Logic */
+        @media (max-width: 1023px) {
+            .header-left { transition: width 0.3s, opacity 0.3s, margin 0.3s, gap 0.3s; overflow: hidden; }
+            .list-header { transition: max-height 0.3s, padding 0.3s, opacity 0.3s, border 0.3s; overflow: hidden; max-height: 60px; }
+            body.scrolled-down .header-left { width: 0; opacity: 0; margin: 0; gap: 0; }
+            body.scrolled-down .list-header { max-height: 0; padding-top: 0; padding-bottom: 0; opacity: 0; border: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="brand" onclick="location.reload()">
+            YOIMI CAMERA
+            <span>INTERNAL WEBMAIL PORTAL</span>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="switchFolder('inbox', this)">
+                Inbox <span class="badge" id="inbox-badge">0</span>
+            </div>
+            <div class="nav-item" onclick="switchFolder('sent', this)">
+                Sent Box
+            </div>
+            <div class="nav-item" onclick="switchFolder('drafts', this)">
+                Drafts <span class="badge" id="drafts-badge">0</span>
+            </div>
+            <div class="nav-item" onclick="switchFolder('trash', this)">Trash</div>
+            <div class="nav-item" style="color: #d9534f; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px; font-size: 11px; letter-spacing: 1px;">MANAGEMENT ALERTS</div>
+        </div>
+        <div class="user-profile">
+            <div class="avatar"><img src="images/Misaki Manami.webp" alt="三崎 愛観"></div>
+            <div class="user-info">
+                <div class="user-name">三崎 愛観</div>
+                <div style="color: var(--text-muted);">Chief Technician</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="header-left">
+                <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="Search messages...">
+            </div>
+            <button class="logout-btn" onclick="window.location.href='login.html'">LOGOUT</button>
+        </div>
+
+        <div style="display: flex; flex: 1; overflow: hidden;">
+            <div class="list-panel">
+                <div class="list-header" id="current-folder-name">Inbox</div>
+                <div class="email-list" id="email-list-container">
+                    <!-- Dynamic Content Loading -->
+                </div>
+            </div>
+            
+            <div class="message-view" id="message-view-panel">
+                <div class="msg-view-empty" id="empty-state">
+                    <i>✉</i>
+                    <p>メッセージを選択して表示します</p>
+                </div>
+                <div class="msg-container" id="msg-content">
+                    <!-- Dynamic Message Loading -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const emails = [
+            {
+                id: 1,
+                folder: 'sent',
+                to: '刈谷 哲',
+                email: 'yoimicamera_kariya@yoimi.co.jp',
+                date: '2016-10-24 10:15',
+                subject: '第2保管庫の湿度上昇の件',
+                snippet: '刈谷さん お疲れ様です、メンテナンスの三崎です。昨日から第2保管庫の湿度センサー……',
+                body: `刈谷さん
+お疲れ様です、メンテナンスの三崎です。
+
+昨日から第2保管庫の湿度センサーの値が、設定値をわずかに上回ったまま安定しません。
+この部屋には鳴海先生のLuminar 85mmや、デリケートなオールドレンズを集中させているので、カビの発生が非常に心配です。
+
+私が直接確認した限り、除湿機自体は稼働しているようなのですが、システム側の監視ログやセンサーの故障の可能性を一度確認していただけないでしょうか？
+先生の大事なレンズに何かあったらと思うと、気が気ではありません。よろしくお願いします。`,
+                unread: false,
+                replied: false
+            },
+            {
+                id: 2,
+                folder: 'inbox',
+                sender: '刈谷 哲',
+                email: 'yoimicamera_kariya@yoimi.co.jp',
+                date: '2016-10-24 11:42',
+                subject: 'Re: 第2保管庫の湿度上昇の件',
+                snippet: '三崎さん ログを確認しました。結論から言うと、センサーの故障ではなく、単なる……',
+                body: `三崎さん
+
+ログを確認しました。結論から言うと、センサーの故障ではなく、単なる「閾値（しきいち）設定」の論理的ミスマッチです。
+先週のシステムアップデートの際、外部気温との連動アルゴリズムを微調整しましたが、第2保管庫の断熱特性を考慮しきれていなかったようです。
+
+すでにリモートでパラメータを最適化し、除湿機の出力を15%引き上げました。あと30分もすれば規定値内に収まるはずです。
+数値のみで判断せず、現場の違和感を報告してくれたのは助かりました。
+
+鳴海さんのレンズについては、私のシステムが守りますのでご安心を。`,
+                unread: false,
+                replied: true
+            },
+            {
+                id: 3,
+                folder: 'inbox',
+                sender: '星野 悠',
+                email: 'yoimicamera_hoshino@yoimi.co.jp',
+                date: '2016-10-25 18:20',
+                subject: '明日の山岳撮影にかかる機材持ち出しと行程について',
+                snippet: '柴田店長、三崎さん お疲れ様です、星野です。明日の撮影に向けた機材の……',
+                body: `柴田店長、三崎さん
+
+お疲れ様です、星野です。
+
+明日の撮影に向けた機材の最終持ち出し報告です。
+鳴海先生からのご指示により、以下の機材を私が先行して車に積み込みます。
+
+- MUSEO 28-70mm F2.8 (サブカメラ用・玲奈さんオフショット撮影用)
+- ASTRAL 70-200mm F2.8 (予備)
+- 大型カーボン三脚、照明用レフ板一式
+
+※先生のメインである「Luminar 85mm F1.4」および予備バッテリー等は、全てご本人が直接管理されます。
+また、三崎さんに丁寧にメンテしていただいた機材は、すべて防湿ケースに収めました。
+
+明日は早朝4時に先生と玲奈さんをピックアップし、5時半には現地入りして霧の状況を確認します。
+私が先日のロケハンで掴んだデータ通りなら、夜明け直後に最高の光が差すはずです。先生に恥じないよう、アシスタントとして全力を尽くします。
+
+よろしくお願いいたします。`,
+                unread: true,
+                replied: false
+            }
+        ];
+
+        let currentFolder = 'inbox';
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        function renderList(folder) {
+            currentFolder = folder;
+            const container = document.getElementById('email-list-container');
+            const items = emails.filter(e => e.folder === folder).sort((a,b) => new Date(b.date) - new Date(a.date));
+            
+            let folderTitle = "Inbox";
+            if(folder === 'sent') folderTitle = "Sent Box";
+            if(folder === 'drafts') folderTitle = "Drafts";
+            if(folder === 'trash') folderTitle = "Trash";
+            document.getElementById('current-folder-name').innerText = folderTitle;
+            
+            container.innerHTML = items.map(e => `
+                <div class="email-item ${e.unread ? 'unread' : ''}" onclick="showMessage(${e.id}, this)">
+                    <div class="email-sender">${folder === 'inbox' ? e.sender : 'To: ' + (e.to || e.sender)}</div>
+                    <div class="email-content">
+                        <div class="email-subject">
+                            ${e.replied ? '<span class="reply-mark">↩</span>' : ''}
+                            ${e.subject}
+                        </div>
+                        <div class="email-snippet">${e.snippet}</div>
+                    </div>
+                    <div class="email-date">${e.date.split(' ')[0].substring(5)}</div>
+                </div>
+            `).join('');
+
+            // Update Badge
+            const inboxUnread = emails.filter(e => e.folder === 'inbox' && e.unread).length;
+            document.getElementById('inbox-badge').innerText = inboxUnread;
+            document.getElementById('inbox-badge').style.display = inboxUnread > 0 ? 'inline-block' : 'none';
+
+            const draftsCount = emails.filter(e => e.folder === 'drafts').length;
+            document.getElementById('drafts-badge').innerText = draftsCount;
+            document.getElementById('drafts-badge').style.display = draftsCount > 0 ? 'inline-block' : 'none';
+        }
+
+        function showMessage(id, element) {
+            const email = emails.find(e => e.id === id);
+            if (!email) return;
+
+            // Mark read
+            if (email.unread) {
+                email.unread = false;
+                renderList(currentFolder);
+            }
+
+            // UI Highlight
+            document.querySelectorAll('.email-item').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+
+            const contentArea = document.getElementById('msg-content');
+            const emptyState = document.getElementById('empty-state');
+            
+            emptyState.style.display = 'none';
+            contentArea.classList.add('active');
+
+            contentArea.innerHTML = `
+                <button class="back-btn" onclick="closeMessage()">← Back to List</button>
+                <div class="msg-header">
+                    <h2 class="msg-subject">${email.subject}</h2>
+                    <div class="msg-meta">
+                        <div><strong>From:</strong> ${email.sender || '三崎 愛観 (Self)'} &lt;${email.folder === 'inbox' ? email.email : 'yoimicamera_misaki@yoimi.co.jp'}&gt;</div>
+                        <div><strong>To:</strong> ${email.folder === 'inbox' ? '三崎 愛観 &lt;yoimicamera_misaki@yoimi.co.jp&gt;' : email.to + (email.email ? ' &lt;' + email.email + '&gt;' : '')}</div>
+                        <div style="margin-top:10px;"><strong>Date:</strong> ${email.date}</div>
+                    </div>
+                </div>
+                <div class="msg-body">${email.body.replace(/\n/g, '<br>')}</div>
+            `;
+
+            if (window.innerWidth < 1024) {
+                document.getElementById('message-view-panel').classList.add('active');
+            }
+        }
+
+        function closeMessage() {
+            document.getElementById('message-view-panel').classList.remove('active');
+        }
+
+        function switchFolder(folder, el) {
+            document.querySelectorAll('.nav-item').forEach(v => v.classList.remove('active'));
+            el.classList.add('active');
+            renderList(folder);
+            
+            // Close sidebar on mobile
+            if (window.innerWidth < 1024) {
+                toggleSidebar();
+            }
+
+            // Clear message view on desktop
+            if (window.innerWidth >= 1024) {
+                document.getElementById('empty-state').style.display = 'flex';
+                document.getElementById('msg-content').classList.remove('active');
+            }
+        }
+
+        // Init
+        window.onload = () => {
+            renderList('inbox');
+
+            // Mobile Scroll Logic
+            const emailList = document.getElementById('email-list-container');
+            let lastScrollTop = 0;
+            emailList.addEventListener('scroll', () => {
+                if (window.innerWidth >= 1024) return;
+                let st = emailList.scrollTop;
+                if (st > lastScrollTop && st > 30) {
+                    document.body.classList.add('scrolled-down');
+                } else if (st < lastScrollTop) {
+                    document.body.classList.remove('scrolled-down');
+                }
+                lastScrollTop = st;
+            });
+        };
+    </script>
+</body>
+</html>

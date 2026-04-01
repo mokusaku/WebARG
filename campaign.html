@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>秋のポートレート応援キャンペーン | YOIMI CAMERA</title>
+    <style>
+        /* 共通設定：プレミアムなダークテーマ */
+        body { margin: 0; font-family: "Helvetica Neue", "Arial", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif; background-color: #202020; color: #ffffff; line-height: 1.8; }
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.6; }
+        
+        /* ヘッダー部 */
+        header { background-color: #202020; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333333; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 5px; }
+        .logo span { font-size: 10px; font-weight: normal; letter-spacing: 2px; display: block; color: #888; }
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 13px; letter-spacing: 1px; transition: color 0.3s; }
+        nav a:hover { color: #aaaaaa; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .login-btn { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 8px 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { background-color: #ffffff; color: #000000; }
+        .search-widget { position: relative; display: flex; align-items: center; }
+        .search-widget input[type="text"] { background-color: #222222; border: 1px solid #444444; color: #ffffff; padding: 10px 15px; width: 180px; font-size: 12px; outline: none; transition: border-color 0.3s; }
+        .search-widget input[type="text"]:focus { border-color: #ffffff; }
+        .search-widget button { background-color: #ffffff; color: #000000; border: none; padding: 10px 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .search-widget button:hover { background-color: #cccccc; }
+        #searchResult { display: none; position: absolute; top: 100%; right: 0; background-color: #ffffff; color: #111111; border: 1px solid #eeeeee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 260px; padding: 20px; margin-top: 10px; font-size: 13px; z-index: 999; }
+
+        /* コンテンツ領域 */
+        .container { max-width: 900px; margin: 100px auto; padding: 0 20px; min-height: 60vh; }
+        .campaign-banner { margin-bottom: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .campaign-banner img { width: 100%; display: block; }
+        .model-credit { text-align: right; color: #888888; font-size: 11px; letter-spacing: 1px; margin-bottom: 40px; margin-right: 5px; }
+        .campaign-header { text-align: center; margin-bottom: 60px; }
+        .campaign-header span { color: #888888; font-size: 14px; letter-spacing: 4px; text-transform: uppercase; display: block; margin-bottom: 20px; }
+        .campaign-period { color: #aaaaaa !important; letter-spacing: 2px !important; margin-top: -10px; margin-bottom: 30px !important; }
+        .campaign-header h1 { font-size: 36px; font-weight: 300; letter-spacing: 4px; margin: 0; }
+        
+        .campaign-intro { text-align: center; font-size: 18px; color: #cccccc; margin-bottom: 80px; line-height: 2.0; }
+        
+        .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 100px; }
+        .feature-item { background-color: #1a1a1a; padding: 40px; border: 1px solid #333333; }
+        .feature-item h2 { font-size: 20px; color: #ffffff; margin-top: 0; margin-bottom: 20px; border-bottom: 1px solid #444444; padding-bottom: 15px; letter-spacing: 1px; }
+        .feature-item p { font-size: 15px; color: #aaaaaa; margin-bottom: 0; }
+        
+        /* おすすめレンズセクション */
+        .recommended-section { border-top: 1px solid #333333; padding-top: 80px; }
+        .recommended-section h2 { text-align: center; font-size: 24px; font-weight: 300; letter-spacing: 3px; margin-bottom: 50px; }
+        .lens-card { display: flex; background-color: #151515; border: 1px solid #222222; margin-bottom: 30px; overflow: hidden; }
+        .lens-info { padding: 40px; flex: 1; }
+        .lens-info h3 { font-size: 22px; color: #ffffff; margin: 0 0 15px 0; }
+        .lens-info p { font-size: 14px; color: #888888; line-height: 1.8; }
+        .lens-price { font-size: 18px; color: #ffffff; margin-top: 25px; font-weight: bold; }
+        .lens-price span { font-size: 12px; color: #666666; text-decoration: line-through; margin-right: 15px; }
+
+        .back-link { text-align: center; margin-top: 100px; }
+        .back-link a { display: inline-block; background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 15px 40px; font-size: 13px; font-weight: bold; letter-spacing: 2px; transition: all 0.3s; }
+        .back-link a:hover { background-color: #ffffff; color: #000000; }
+
+        footer { background-color: #202020; color: #555555; text-align: center; padding: 40px 20px; font-size: 11px; margin-top: 120px; letter-spacing: 2px; border-top: 1px solid #333333; }
+
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px 20px; height: auto; }
+            nav { margin: 15px 0; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .header-right { width: 100%; flex-direction: column; gap: 15px; }
+            .search-widget { width: 100%; justify-content: center; }
+            .search-widget input[type="text"] { width: 60%; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .lens-card { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="index.html">YOIMI <span>ヨイミカメラ</span></a></div>
+        <nav><a href="notice.html">PRODUCTS</a><a href="notice.html">LENSES</a><a href="notice.html">RENTAL</a><a href="staff.html">STAFF</a><a href="company.html">ABOUT</a></nav>
+        <div class="header-right">
+            <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
+            <div class="search-widget">
+                <input type="text" id="keywordInput" placeholder="サイト内・商品検索">
+                <button onclick="executeSearch()">検索</button>
+                <div id="searchResult"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="campaign-banner">
+            <img src="images/campaign banner.webp" alt="秋のポートレート応援キャンペーン">
+        </div>
+        <div class="model-credit">MODEL: 堂島　玲奈さん</div>
+        
+        <div class="campaign-header">
+            <span>Special Offer</span>
+            <span class="campaign-period">Campaign Period: 10.10 - 10.31</span>
+            <h1>秋のポートレート応援キャンペーン</h1>
+        </div>
+        
+        <div class="campaign-intro">
+            秋の柔らかな光は、人物を最も美しく描き出します。<br>
+            ヨイミカメラでは、皆様の情緒豊かな表現をサポートするため、<br>
+            ポートレート用機材の特別レンタルプランをご用意いたしました。
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h2>対象レンズ 30% OFF</h2>
+                <p>人物撮影に定評のある指定の中望遠レンズ、単焦点レンズのレンタル料金を一律30%割引いたします。</p>
+            </div>
+            <div class="feature-item">
+                <h2>SDカード 128GB 無償貸出</h2>
+                <p>キャンペーン期間中、対象機材をご予約いただいた方に、高速書き込み対応のSDカードを無料でお貸し出しします。</p>
+            </div>
+        </div>
+
+        <div class="recommended-section">
+            <h2>Recommended Lenses</h2>
+            
+            <div class="lens-card">
+                <div class="lens-info">
+                    <h3>Luminar 85mm f/1.4 (Classic Edition)</h3>
+                    <p>
+                        「光の粒子を、掌に。」<br>
+                        伝説的な写真家たちに愛された、唯一無二の描写を放つオールドレンズの復刻版。現行レンズにはない、湿度を感じさせるしっとりとしたボケ味が最大の特徴です。鳴海朔氏が「真理のレンズ」と呼び、今なお自身のメインレンズとして使い続けていることでも知られ、数多くの名作ポートレートを生み出し続けています。
+                    </p>
+                    <div class="lens-price"><span>¥6,200</span> ¥4,340 / 1day</div>
+                </div>
+            </div>
+
+            <div class="lens-card">
+                <div class="lens-info">
+                    <h3>ASTRAL 85mm F1.4 Prime (mkII)</h3>
+                    <p>
+                        圧倒的な解像感と、とろけるような美しいボケ味を両立させた、ASTRALシリーズ最高峰のポートレートレンズ。新開発のナノコーティングにより逆光時のフレアやゴーストを極限まで抑制し、瞳AFとの組み合わせで、一瞬の表情も逃したくないプロの現場で確実なクオリティと信頼性を提供します。
+                    </p>
+                    <div class="lens-price"><span>¥8,500</span> ¥5,950 / 1day</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-link"><a href="index.html">トップページへ戻る</a></div>
+    </div>
+
+    <footer>&copy; 2016 YOIMI CAMERA. All Rights Reserved.</footer>
+
+    <script src="search.js"></script>
+</body>
+</html>

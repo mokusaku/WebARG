@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>検索結果 | YOIMI CAMERA</title>
+    <style>
+        /* 共通設定：プレミアムなダークテーマ */
+        body { margin: 0; font-family: "Helvetica Neue", "Arial", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif; background-color: #202020; color: #ffffff; line-height: 1.8; }
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.6; }
+        
+        /* ヘッダー部 */
+        header { background-color: #202020; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333333; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 5px; }
+        .logo span { font-size: 10px; font-weight: normal; letter-spacing: 2px; display: block; color: #888; }
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 13px; letter-spacing: 1px; transition: color 0.3s; }
+        nav a:hover { color: #aaaaaa; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .login-btn { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 8px 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { background-color: #ffffff; color: #000000; }
+        .search-widget { position: relative; display: flex; align-items: center; }
+        .search-widget input[type="text"] { background-color: #222222; border: 1px solid #444444; color: #ffffff; padding: 10px 15px; width: 180px; font-size: 12px; outline: none; transition: border-color 0.3s; }
+        .search-widget input[type="text"]:focus { border-color: #ffffff; }
+        .search-widget button { background-color: #ffffff; color: #000000; border: none; padding: 10px 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .search-widget button:hover { background-color: #cccccc; }
+        #searchResult { display: none; position: absolute; top: 100%; right: 0; background-color: #ffffff; color: #111111; border: 1px solid #eeeeee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 260px; padding: 20px; margin-top: 10px; font-size: 13px; z-index: 999; }
+
+        /* コンテンツ領域 */
+        .container { max-width: 800px; margin: 100px auto; padding: 0 20px; min-height: 60vh; }
+        .search-header { border-bottom: 1px solid #333333; padding-bottom: 30px; margin-bottom: 50px; }
+        .search-query { font-size: 24px; font-weight: normal; color: #ffffff; letter-spacing: 2px; }
+        .search-query span { font-weight: bold; color: #ffffff; }
+        .result-count { font-size: 13px; color: #888888; margin-top: 10px; letter-spacing: 1px; }
+        .result-list { list-style: none; padding: 0; margin: 0; }
+        .result-item { border-bottom: 1px solid #333333; padding: 35px 0; }
+        .result-category { font-size: 11px; color: #666666; letter-spacing: 3px; margin-bottom: 10px; text-transform: uppercase; }
+        .result-title { font-size: 18px; color: #ffffff; margin-bottom: 15px; letter-spacing: 1px; }
+        .result-title a { text-decoration: underline; text-underline-offset: 4px; }
+        .result-title a:hover { color: #aaaaaa; }
+        .result-snippet { font-size: 14px; color: #888888; line-height: 1.8; }
+        .result-snippet .highlight { color: #ffffff; font-weight: bold; background: #333333; padding: 1px 5px; border-radius: 2px; }
+
+        .no-result { text-align: center; color: #666666; margin-top: 100px; letter-spacing: 1px; }
+        .no-result p { font-size: 15px; line-height: 2.0; }
+
+        .back-link { text-align: center; margin-top: 80px; }
+        .back-link a { display: inline-block; background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 15px 40px; font-size: 13px; font-weight: bold; letter-spacing: 2px; transition: all 0.3s; }
+        .back-link a:hover { background-color: #ffffff; color: #000000; }
+
+        footer { background-color: #202020; color: #555555; text-align: center; padding: 40px 20px; font-size: 11px; margin-top: 120px; letter-spacing: 2px; border-top: 1px solid #333333; }
+
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px 20px; height: auto; }
+            nav { margin: 15px 0; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .header-right { width: 100%; flex-direction: column; gap: 15px; }
+            .search-widget { width: 100%; justify-content: center; }
+            .search-widget input[type="text"] { width: 60%; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="index.html">YOIMI <span>ヨイミカメラ</span></a></div>
+        <nav><a href="notice.html">PRODUCTS</a><a href="notice.html">LENSES</a><a href="notice.html">RENTAL</a><a href="staff.html">STAFF</a><a href="company.html">ABOUT</a></nav>
+        <div class="header-right">
+            <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
+            <div class="search-widget">
+                <input type="text" id="keywordInput" placeholder="サイト内・商品検索">
+                <button onclick="executeSearch()">検索</button>
+                <div id="searchResult"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="search-header">
+            <div class="search-query">「<span id="q"></span>」の検索結果</div>
+            <div class="result-count" id="resultCount"></div>
+        </div>
+        <div id="resultsArea"></div>
+        <div class="no-result" id="noResultArea" style="display:none;">
+            <p>「<span id="noResultQuery"></span>」に一致する情報は見つかりませんでした。</p>
+            <p style="font-size: 13px; color: #555;">別のキーワードで再度お試しください。</p>
+        </div>
+        <div class="back-link"><a href="index.html">トップページへ戻る</a></div>
+    </div>
+    <footer>&copy; 2016 YOIMI CAMERA. All Rights Reserved.</footer>
+
+    <script src="search.js"></script>
+    <script>
+        // 記事データベース
+        const articles = [
+            {
+                category: "ARTICLE / INTERVIEW",
+                title: "光の粒子を、掌に。――写真家・鳴海朔が語る『Luminar 85mm』の呪縛と真理",
+                url: "interview.html",
+                snippet: "星野悠による鳴海朔のインタビュー記事。「これ以外で、私のポートレートを撮る意味があるかね？」…Luminar 85mmへの異常な愛着と、現場にはそれ一本しか持ち込まないという衝撃の事実が語られる。",
+                keywords: ["luminar 85mm", "luminar", "鳴海", "鳴海 朔", "鳴海朔", "星野", "ヨイミカメラ", "宵見", "宵見町"],
+                isSecret: true
+            },
+            {
+                category: "JOURNAL / 店長日記 #4（最終更新）",
+                title: "機材のメンテナンスと、秋の撮影シーズン",
+                url: "diary.html",
+                snippet: "…メンテ担当の三崎さんも今日は遅くまで残ってくれていました。明後日、常連の鳴海先生が撮影に出るらしく、念入りに機材を磨いてくれています。「先生は絶対に旧型のマニュアルレンズ『Luminar 85mm』しか使わないのに…",
+                keywords: ["luminar 85mm", "luminar", "鳴海", "鳴海 朔", "鳴海朔", "三崎", "星野", "ヨイミカメラ", "宵見", "宵見町"]
+            },
+            {
+                category: "JOURNAL / 店長日記 #3",
+                title: "秋の気配と、光を追い求める情熱",
+                url: "diary3.html",
+                snippet: "…「あの湿り気を帯びた霧は、最新のレンズでは綺麗に写りすぎて情緒がない。Luminar 85mmのあの少し甘い描写と、光が拡散する時の独特の粒子感があって初めて、完成する世界があるんだ」…",
+                keywords: ["luminar 85mm", "luminar", "鳴海", "鳴海 朔", "鳴海朔", "三崎", "星野", "ヨイミカメラ", "宵見", "宵見町"]
+            },
+            {
+                category: "JOURNAL / 店長日記 #2",
+                title: "デジタル時代の「金庫」と、頼もしい若手スタッフ",
+                url: "diary2.html",
+                snippet: "…刈谷君が提案してくれたのが、独自の多重暗号化を施したストレージシステムです。彼が言うには「情報の秘匿性」を最優先に設計されており、管理主であっても中身を見ることは物理的に不可能な構造…いわばデジタル上の『絶対的な金庫』…",
+                keywords: ["刈谷", "鳴海", "鳴海 朔", "鳴海朔", "クラウドサーバー", "クラウド", "ヨイミカメラ", "宵見", "宵見町"]
+            },
+            {
+                category: "JOURNAL / 店長日記 #1",
+                title: "地域の繋がりと、ポートレート撮影の奥深さ",
+                url: "diary1.html",
+                snippet: "…堂島剛様がご来店されました。当店へ最新の照明機材を複数寄贈していただく運びとなりました…お嬢様の玲奈さんをモデルにお迎えしてテストシューティングを行いました…刈谷君が構築中の「独自のクラウドサーバー」や「バックアップの冗長性」といった専門的なシステムの話で盛り上がっていたようです…",
+                keywords: ["堂島", "堂島 剛", "堂島剛", "刈谷", "クラウドサーバー", "クラウド", "ヨイミカメラ", "宵見", "宵見町"]
+            },
+            {
+                category: "CAMPAIGN",
+                title: "秋のポートレート応援キャンペーン",
+                url: "campaign.html",
+                snippet: "…Luminar 85mm f/1.4 (Classic Edition)「光の粒子を、掌に。」鳴海朔氏が「真理のレンズ」と呼び、今なお自身のメインレンズとして使い続けていることでも知られ…ASTRAL 85mm F1.4 Prime (mkII)…堂島　玲奈さん…",
+                keywords: ["luminar 85mm", "luminar", "鳴海", "鳴海 朔", "鳴海朔", "堂島", "ヨイミカメラ"]
+            },
+            {
+                category: "COMPANY INFO",
+                title: "会社情報 ― YOIMI CAMERA",
+                url: "company.html",
+                snippet: "…ヨイミカメラは1995年に宵見町で創業したカメラ専門店です。代表取締役 柴田健吾が、プロの方から写真を趣味にされる方まで幅広い皆様に最高の機材環境を提供しています…",
+                keywords: ["ヨイミカメラ", "宵見", "宵見町"]
+            },
+            {
+                category: "NOTICE / 重要",
+                title: "【重要】臨時休業のお知らせ",
+                url: "notice.html",
+                snippet: "…臨時休業のお知らせ。サーバー上のデータについて、アクセス期限は2016年11月末日までとさせていただきます…ヨイミカメラ 店長 柴田健吾…",
+                keywords: ["ヨイミカメラ", "クラウドサーバー", "クラウド", "宵見", "宵見町"]
+            },
+            {
+                category: "PERSONNEL / ARCHIVE",
+                title: "スタッフ紹介アーカイブ : 堂島 玲奈",
+                url: "archive_rena.html",
+                snippet: "Visual Promotion / Studio Assistant 堂島　玲奈のアーカイブプロフィール。2016年入社の新人スタッフ情報の詳細。",
+                keywords: ["堂島 玲奈", "堂島　玲奈"],
+                strictMatch: true
+            },
+            {
+                category: "PRESS RELEASE",
+                title: "写真表現の「聖域」を守る。プロフォトグラファー専用暗号化ストレージ「YOIMI Cloud」提供開始のお知らせ",
+                url: "release_cloud.html",
+                snippet: "ヨイミカメラは、2016年4月20日より、プロフォトグラファーおよびハイアマチュアを対象とした、高セキュリティ型クラウドストレージサービス「YOIMI Cloud」の提供を開始いたします。",
+                keywords: ["yoimi cloud"],
+                strictMatch: true,
+                isSecret: true
+            },
+            {
+                category: "SYSTEM LOG",
+                title: "YM-MST-2016-1026",
+                url: "memo_1026.html",
+                snippet: "[TEMP_SAVE] 管理番号：YM-MST-2016-1026<br>10/27 03:22<br><br>堂島から送られてきたデータ、最悪だ。構図もピントも素人以下。ASTRALを使いこなせていない。こんなゴミを「鳴海の作品」として通すには、Exifの偽装だけじゃ足りない。ノイズを乗せて、無理やり「霧の中の混乱」に見せかけるしかない。",
+                keywords: ["ym-mst-2016-1026"],
+                strictMatch: true,
+                isSecret: true
+            }
+        ];
+
+        function highlightText(text, query) {
+            if (!query) return text;
+            const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp('(' + escaped + ')', 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        function getQueryParam(key) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(key);
+        }
+
+        window.onload = function() {
+            const query = getQueryParam('q');
+            const qDisplay = document.getElementById('q');
+            const resultsArea = document.getElementById('resultsArea');
+            const noResultArea = document.getElementById('noResultArea');
+            const noResultQuery = document.getElementById('noResultQuery');
+            const resultCount = document.getElementById('resultCount');
+
+            if (!query) {
+                qDisplay.innerText = "なし";
+                noResultArea.style.display = 'block';
+                noResultQuery.innerText = "";
+                resultCount.innerText = "";
+                return;
+            }
+
+            qDisplay.innerText = query;
+            const queryLower = query.toLowerCase().replace(/\s+/g, ' ').trim(); // 連続する空白を1つに統合
+
+            // 特別な制限：姓名の間にスペースがない「堂島玲奈」は結果を返さない
+            if (queryLower === "堂島玲奈") {
+                resultsArea.innerHTML = '';
+                noResultArea.style.display = 'block';
+                noResultQuery.innerText = query;
+                resultCount.innerText = "0 件の結果が見つかりました";
+                return;
+            }
+
+            // キーワードマッチング
+            const matched = articles.filter(article => {
+                return article.keywords.some(kw => {
+                    const kwLower = kw.toLowerCase();
+                    if (article.strictMatch) {
+                        // 厳格な一致が必要な場合（隠し要素など）
+                        return kwLower === queryLower;
+                    }
+                    // 通常の検索（部分一致）
+                    return kwLower.includes(queryLower) || queryLower.includes(kwLower);
+                });
+            });
+
+            if (matched.length > 0) {
+                resultCount.innerText = matched.length + " 件の結果が見つかりました";
+                let html = '<ul class="result-list">';
+                matched.forEach(article => {
+                    html += `
+                        <li class="result-item">
+                            <div class="result-category">${article.category}</div>
+                            <div class="result-title"><a href="${article.url}"${(article.strictMatch || article.isSecret) ? ' style="color: #d9534f;"' : ''}>${highlightText(article.title, query)}</a></div>
+                            <div class="result-snippet">${highlightText(article.snippet, query)}</div>
+                        </li>`;
+                });
+                html += '</ul>';
+                resultsArea.innerHTML = html;
+                noResultArea.style.display = 'none';
+            } else {
+                resultsArea.innerHTML = '';
+                noResultArea.style.display = 'block';
+                noResultQuery.innerText = query;
+                resultCount.innerText = "";
+            }
+        }
+    </script>
+</body>
+</html>

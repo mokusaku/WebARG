@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRESS RELEASE - YOIMI Cloud | YOIMI CAMERA</title>
+    <style>
+        /* 共通設定：プレミアムなダークテーマ */
+        body { margin: 0; font-family: "Helvetica Neue", "Arial", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif; background-color: #202020; color: #ffffff; line-height: 1.8; }
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.6; }
+        
+        /* ヘッダー部 */
+        header { background-color: #202020; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333333; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 5px; }
+        .logo span { font-size: 10px; font-weight: normal; letter-spacing: 2px; display: block; color: #888; }
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 13px; letter-spacing: 1px; transition: color 0.3s; }
+        nav a:hover { color: #aaaaaa; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .login-btn { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 8px 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { background-color: #ffffff; color: #000000; }
+        .search-widget { position: relative; display: flex; align-items: center; }
+        .search-widget input[type="text"] { background-color: #222222; border: 1px solid #444444; color: #ffffff; padding: 10px 15px; width: 180px; font-size: 12px; outline: none; transition: border-color 0.3s; }
+        .search-widget input[type="text"]:focus { border-color: #ffffff; }
+        .search-widget button { background-color: #ffffff; color: #000000; border: none; padding: 10px 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .search-widget button:hover { background-color: #cccccc; }
+        #searchResult { display: none; position: absolute; top: 100%; right: 0; background-color: #ffffff; color: #111111; border: 1px solid #eeeeee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 260px; padding: 20px; margin-top: 10px; font-size: 13px; z-index: 999; }
+
+        /* コンテンツ領域 */
+        .container { max-width: 800px; margin: 100px auto; padding: 0 20px; min-height: 60vh; }
+        .notice-header { border-bottom: 1px solid #333333; padding-bottom: 30px; margin-bottom: 50px; }
+        .notice-date { color: #888888; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px; display: block; }
+        .notice-title { font-size: 28px; font-weight: normal; color: #ffffff; margin: 0; letter-spacing: 1px; color: #5bc0de; }
+        
+        .notice-body { font-size: 15px; color: #cccccc; line-height: 2.0; }
+        .notice-body h3 { font-size: 20px; color: #ffffff; margin-top: 50px; margin-bottom: 20px; border-left: 3px solid #5bc0de; padding-left: 15px; }
+        .notice-body p { margin-bottom: 25px; }
+        .notice-body strong { color: #ffffff; }
+        
+        .action-box { background-color: #1a1a1a; padding: 30px; border: 1px solid #333333; margin-top: 40px; }
+        .action-box p { margin: 0 0 20px 0; }
+        .login-link { display: inline-block; background-color: #ffffff; color: #000000; padding: 15px 40px; font-size: 14px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s; }
+        .login-link:hover { background-color: #cccccc; }
+
+        .back-link { text-align: center; margin-top: 80px; }
+        .back-link a { display: inline-block; background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 15px 40px; font-size: 13px; font-weight: bold; letter-spacing: 2px; transition: all 0.3s; }
+        .back-link a:hover { background-color: #ffffff; color: #000000; }
+
+        /* 内部管理メモ */
+        .management-memo {
+            margin-top: 40px;
+            padding: 30px;
+            background-color: #251010;
+            border: 1px solid #451010;
+            border-left: 4px solid #ed1c24;
+            border-radius: 4px;
+        }
+        .management-memo-header {
+            color: #ed1c24;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .management-memo-header::before {
+            content: "INTERNAL USE ONLY";
+            background: #ed1c24;
+            color: white;
+            padding: 2px 8px;
+            font-size: 10px;
+        }
+        .management-memo-body {
+            font-size: 14px;
+            color: #aaaaaa;
+            line-height: 1.8;
+        }
+        .management-memo-footer {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #666666;
+            text-align: right;
+            border-top: 1px solid #331010;
+            padding-top: 10px;
+        }
+
+        footer { background-color: #202020; color: #555555; text-align: center; padding: 40px 20px; font-size: 11px; margin-top: 120px; letter-spacing: 2px; border-top: 1px solid #333333; }
+
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px 20px; height: auto; }
+            nav { margin: 15px 0; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .header-right { width: 100%; flex-direction: column; gap: 15px; }
+            .search-widget { width: 100%; justify-content: center; }
+            .search-widget input[type="text"] { width: 60%; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="index.html">YOIMI <span>ヨイミカメラ</span></a></div>
+        <nav><a href="notice.html">PRODUCTS</a><a href="notice.html">LENSES</a><a href="notice.html">RENTAL</a><a href="staff.html">STAFF</a><a href="company.html">ABOUT</a></nav>
+        <div class="header-right">
+            <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
+            <div class="search-widget">
+                <input type="text" id="keywordInput" placeholder="サイト内・商品検索">
+                <button onclick="executeSearch()">検索</button>
+                <div id="searchResult"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <article class="notice-article">
+            <div class="notice-header">
+                <span class="notice-date">PRESS RELEASE | 2016.04.20 | 管理番号： YM-MST-2016-0420</span>
+                <h1 class="notice-title">写真表現の「聖域」を守る。プロフォトグラファー専用暗号化ストレージ「YOIMI Cloud」提供開始のお知らせ</h1>
+            </div>
+            
+            <div class="notice-body">
+                <p>ヨイミカメラ（所在地：宵見県、代表：柴田 健吾）は、2016年4月20日より、プロフォトグラファーおよびハイアマチュアを対象とした、高セキュリティ型クラウドストレージサービス「YOIMI Cloud」の提供を開始いたします。</p>
+
+                <h3>■ 背景と目的</h3>
+                <p>デジタル写真の普及に伴い、撮影データの肥大化と流出リスクは年々増加しています。ヨイミカメラは、写真家が撮影に集中できる環境をデジタルの側面からサポートすべく、既存の汎用クラウドサービスとは一線を画す「表現者のためのクローズド・ストレージ」を構築いたしました。</p>
+
+                <h3>■ 「YOIMI Cloud」の主要特性</h3>
+                <p><strong>軍用レベルの暗号化プロトコル</strong>: 大手データセンターでの保守経験を持つWeb管理者・刈谷 哲の主導により、独自のエンドツーエンド暗号化を実装。管理側ですらユーザーの生データに介入できない「完全な秘匿性」を担保します。</p>
+                <p><strong>機材同期の最適化</strong>: 提携フォトグラファーやその他プロの方々が現場で使用する機材とリアルタイムで同期。美しい描写を損なわないよう、パケットロスを最小限に抑えた優先転送アルゴリズムを採用しています。</p>
+                <p><strong>レンタル機材とのシームレスな連携</strong>: ヨイミカメラでレンタルした機材のシリアルナンバーとデータを紐付け、撮影から納品までのワークフローをデジタル上で一括管理します。</p>
+
+                <h3>■ 管理責任者：刈谷 哲（Web Management / Digital Strategist）より</h3>
+                <p>「デジタルデータは、物理的なネガ以上に脆弱であり、同時に強固な盾となり得ます。私が設計したYOIMI Cloudは、外部のいかなる介入も許さない『デジタル上の防空壕』です。数値を信奉する私だからこそ、目に見えない光の記録を、寸分違わず守り抜くことを約束します。」</p>
+
+                <h3>■ 本件に関するお問い合わせ先</h3>
+                <p>ヨイミカメラ <br>保守・データ管理担当：刈谷 哲<br>Email: <a href="mailto:yoimicamera_kariya@yoimi.co.jp" style="color:#5bc0de;text-decoration:underline;">yoimicamera_kariya@yoimi.co.jp</a></p>
+
+            </div>
+
+            <!-- 管理メモ -->
+            <div class="management-memo">
+                <div class="management-memo-header">管理メモ</div>
+                <div class="management-memo-body">
+                    このページは鳴海 朔の失踪事件への影響を考慮し、非公開に設定しました。
+                </div>
+                <div class="management-memo-footer">
+                    YOIMI CAMERA System Admin.
+                </div>
+            </div>
+
+        </article>
+
+        <div class="back-link"><a href="index.html">トップページへ戻る</a></div>
+    </div>
+
+    <footer>&copy; 2016 YOIMI CAMERA. All Rights Reserved.</footer>
+
+    <script src="search.js"></script>
+</body>
+</html>

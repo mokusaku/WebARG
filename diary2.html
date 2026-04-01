@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>デジタル時代の「金庫」と、頼もしい若手スタッフ | 店長日記 | YOIMI CAMERA</title>
+    <style>
+        /* 共通設定：プレミアムなダークテーマ */
+        body { margin: 0; font-family: "Helvetica Neue", "Arial", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif; background-color: #202020; color: #ffffff; line-height: 1.8; }
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.6; }
+        
+        /* ヘッダー部 */
+        header { background-color: #202020; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333333; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 5px; }
+        .logo span { font-size: 10px; font-weight: normal; letter-spacing: 2px; display: block; color: #888; }
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 13px; letter-spacing: 1px; transition: color 0.3s; }
+        nav a:hover { color: #aaaaaa; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .login-btn { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 8px 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { background-color: #ffffff; color: #000000; }
+        .search-widget { position: relative; display: flex; align-items: center; }
+        .search-widget input[type="text"] { background-color: #222222; border: 1px solid #444444; color: #ffffff; padding: 10px 15px; width: 180px; font-size: 12px; outline: none; transition: border-color 0.3s; }
+        .search-widget input[type="text"]:focus { border-color: #ffffff; }
+        .search-widget button { background-color: #ffffff; color: #000000; border: none; padding: 10px 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .search-widget button:hover { background-color: #cccccc; }
+        #searchResult { display: none; position: absolute; top: 100%; right: 0; background-color: #ffffff; color: #111111; border: 1px solid #eeeeee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 260px; padding: 20px; margin-top: 10px; font-size: 13px; z-index: 999; }
+
+        /* コンテンツ領域 */
+        .container { max-width: 800px; margin: 100px auto; padding: 0 20px; }
+        .diary-post { margin-bottom: 80px; }
+        .diary-header { border-bottom: 1px solid #444444; padding-bottom: 25px; margin-bottom: 40px; }
+        .diary-date { color: #888888; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
+        .diary-title { font-size: 28px; font-weight: normal; color: #ffffff; margin: 15px 0 0 0; letter-spacing: 1px; }
+        .diary-body { font-size: 16px; color: #cccccc; }
+        .diary-body p { margin-bottom: 30px; }
+        .back-link { text-align: center; margin-top: 80px; }
+        .back-link a { display: inline-block; background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 15px 40px; font-size: 13px; font-weight: bold; letter-spacing: 2px; transition: all 0.3s; }
+        .back-link a:hover { background-color: #ffffff; color: #000000; }
+        
+        .pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 60px; border-top: 1px solid #444; padding-top: 30px; font-size: 13px; letter-spacing: 1px; }
+        .pagination a { color: #aaaaaa; transition: color 0.3s; }
+        .pagination a:hover { color: #ffffff; }
+        .pagination .prev, .pagination .next { width: 33%; }
+        .pagination .next { text-align: right; }
+        .pagination .list { width: 34%; text-align: center; }
+
+        footer { background-color: #202020; color: #555555; text-align: center; padding: 40px 20px; font-size: 11px; margin-top: 120px; letter-spacing: 2px; border-top: 1px solid #333333; }
+
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px 20px; height: auto; }
+            nav { margin: 15px 0; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .header-right { width: 100%; flex-direction: column; gap: 15px; }
+            .search-widget { width: 100%; justify-content: center; }
+            .search-widget input[type="text"] { width: 60%; }
+            .diary-title { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="index.html">YOIMI <span>ヨイミカメラ</span></a></div>
+        <nav>
+            <a href="notice.html">PRODUCTS</a><a href="notice.html">LENSES</a><a href="notice.html">RENTAL</a><a href="staff.html">STAFF</a><a href="company.html">ABOUT</a>
+        </nav>
+        <div class="header-right">
+            <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
+            <div class="search-widget">
+                <input type="text" id="keywordInput" placeholder="サイト内・商品検索">
+                <button onclick="executeSearch()">検索</button>
+                <div id="searchResult"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <article class="diary-post">
+            <div class="diary-header">
+                <div class="diary-date">2016.09.05 Update</div>
+                <h1 class="diary-title">デジタル時代の「金庫」と、頼もしい若手スタッフ</h1>
+            </div>
+            <div class="diary-body">
+                <p>こんばんは、店長の柴田です。<br>九月に入り、夕暮れ時には秋の虫の声が聞こえ始めましたが、日中は相変わらずの残暑が続いていますね。皆様、いかがお過ごしでしょうか。</p>
+                <p>さて、本日はヨイミカメラにとって大きな転換点となるニュースがあります。<br>以前からWeb担当の刈谷君が心血を注いで開発を進めてくれていた、当店独自の「プロフォトグラファー専用クラウドストレージ」がついに試験運用を開始しました。</p>
+                <p>これまでのデータ納品といえば、DVD-Rに焼いたり、あるいは汎用の転送サービスを利用するのが一般的でした。しかし、鳴海先生のような第一線で活躍されるプロの方々からは、「未発表の作品や、モデルさんのプライバシーに関わる生データをネットワークに上げるのは抵抗がある」というお声を以前からいただいていました。</p>
+                <p>そこで刈谷君が提案してくれたのが、独自の多重暗号化を施したストレージシステムです。<br>彼が言うには、このシステムは「情報の秘匿性」を最優先に設計されており、たとえ管理主である私であっても、お客様からお預かりしたデータの中身を勝手に見ることは物理的に不可能な構造になっているそうです。外部からの不正アクセスはもちろん、あらゆる第三者の介入を許さない、いわばデジタル上の『絶対的な金庫』ですね。</p>
+                <p>正直なところ、私には「そこまで厳重にしなくても……」という思いもありましたが、刈谷君の「プロの表現を守ることは、その人の人生を守ることと同じです」という熱い言葉に動かされました。彼は本当に仕事に対してストイックで、将来は自分のセキュリティ会社を立ち上げたいという夢も持っています。その野心と確かな技術が、これからのヨイミカメラを支えてくれるのだと思うと、非常に頼もしい限りです。</p>
+                <p>鳴海先生にもさっそくこのシステムを紹介したところ、「これで安心して、誰にも邪魔されずに光の追求ができるな」と、珍しく満足そうに微笑んでくださいました。</p>
+                <p>新しい技術を取り入れるのは勇気が要ることですが、それによってお客様の創作活動がより自由なものになるのであれば、これ以上の喜びはありません。機材のメンテナンス同様、お預かりするデータの安全性についても、妥協なく追求していきたいと考えております。</p>
+            </div>
+        </article>
+        <div class="pagination">
+            <div class="prev"><a href="diary1.html">&laquo; 地域の繋がりと、ポートレート撮影の奥深さ</a></div>
+            <div class="list"><a href="index.html">トップページへ戻る</a></div>
+            <div class="next"><a href="diary3.html">秋の気配と、光を追い求める情熱 &raquo;</a></div>
+        </div>
+    </div>
+    <footer>&copy; 2016 YOIMI CAMERA. All Rights Reserved.</footer>
+
+    <script src="search.js"></script>
+</body>
+</html>

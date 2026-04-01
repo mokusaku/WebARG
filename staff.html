@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スタッフ紹介 | YOIMI CAMERA</title>
+    <style>
+        /* 共通設定：プレミアムなダークテーマ */
+        body { margin: 0; font-family: "Helvetica Neue", "Arial", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif; background-color: #202020; color: #ffffff; line-height: 1.8; }
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.6; }
+        
+        /* ヘッダー部 */
+        header { background-color: #202020; color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333333; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 5px; }
+        .logo span { font-size: 10px; font-weight: normal; letter-spacing: 2px; display: block; color: #888; }
+        nav { display: flex; gap: 30px; }
+        nav a { font-size: 13px; letter-spacing: 1px; transition: color 0.3s; }
+        nav a:hover { color: #aaaaaa; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .login-btn { background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 8px 20px; font-size: 12px; font-weight: bold; cursor: pointer; transition: all 0.3s; letter-spacing: 1px; }
+        .login-btn:hover { background-color: #ffffff; color: #000000; }
+        .search-widget { position: relative; display: flex; align-items: center; }
+        .search-widget input[type="text"] { background-color: #222222; border: 1px solid #444444; color: #ffffff; padding: 10px 15px; width: 180px; font-size: 12px; outline: none; transition: border-color 0.3s; }
+        .search-widget input[type="text"]:focus { border-color: #ffffff; }
+        .search-widget button { background-color: #ffffff; color: #000000; border: none; padding: 10px 15px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .search-widget button:hover { background-color: #cccccc; }
+        #searchResult { display: none; position: absolute; top: 100%; right: 0; background-color: #ffffff; color: #111111; border: 1px solid #eeeeee; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 260px; padding: 20px; margin-top: 10px; font-size: 13px; z-index: 999; }
+
+        /* コンテンツ領域 */
+        .container { max-width: 900px; margin: 100px auto; padding: 0 20px; }
+        .page-header { border-bottom: 2px solid #333333; padding-bottom: 30px; margin-bottom: 60px; text-align: left; }
+        .page-header span { color: #888888; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .page-header h1 { font-size: 32px; font-weight: 300; letter-spacing: 3px; margin: 0; }
+        .page-header p { color: #888; font-size: 14px; margin-top: 15px; letter-spacing: 1px; }
+
+        /* スタッフカード */
+        .staff-card {
+            display: flex;
+            gap: 50px;
+            align-items: flex-start;
+            margin-bottom: 60px;
+            background-color: #1a1a1a;
+            padding: 50px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            transition: border-color 0.4s;
+        }
+        .staff-card:hover {
+            border-color: #555;
+        }
+        .staff-photo {
+            flex: 0 0 200px;
+            text-align: center;
+        }
+        .staff-photo-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            border: 2px solid #444;
+        }
+        .staff-photo-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(30%);
+            transition: filter 0.4s;
+        }
+        .staff-card:hover .staff-photo-img img {
+            filter: grayscale(0%);
+        }
+        .staff-info {
+            flex: 1;
+        }
+        .staff-name {
+            font-size: 22px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin: 0 0 5px 0;
+            color: #ffffff;
+        }
+        .staff-name-en {
+            font-size: 12px;
+            color: #666;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .staff-role {
+            font-size: 12px;
+            color: #aaaaaa;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: bold;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 20px;
+        }
+        .staff-detail-label {
+            font-size: 11px;
+            color: #666;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            margin-top: 20px;
+        }
+        .staff-detail-text {
+            font-size: 15px;
+            color: #cccccc;
+            line-height: 1.8;
+            margin: 0;
+        }
+        .staff-message {
+            font-size: 15px;
+            color: #cccccc;
+            line-height: 1.8;
+            margin: 0;
+            padding-left: 15px;
+            border-left: 2px solid #444;
+        }
+
+        .back-link { text-align: center; margin-top: 80px; }
+        .back-link a { display: inline-block; background-color: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 15px 40px; font-size: 13px; font-weight: bold; letter-spacing: 2px; transition: all 0.3s; }
+        .back-link a:hover { background-color: #ffffff; color: #000000; }
+
+        footer { background-color: #202020; color: #555555; text-align: center; padding: 40px 20px; font-size: 11px; margin-top: 120px; letter-spacing: 2px; border-top: 1px solid #333333; }
+
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 15px 20px; height: auto; }
+            nav { margin: 15px 0; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .header-right { width: 100%; flex-direction: column; gap: 15px; }
+            .search-widget { width: 100%; justify-content: center; }
+            .search-widget input[type="text"] { width: 60%; }
+            .staff-card { flex-direction: column; padding: 30px 20px; gap: 30px; }
+            .staff-photo { flex: 0 0 auto; width: 100%; }
+            .page-header h1 { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="index.html">YOIMI <span>ヨイミカメラ</span></a></div>
+        <nav>
+            <a href="notice.html">PRODUCTS</a><a href="notice.html">LENSES</a><a href="notice.html">RENTAL</a><a href="staff.html">STAFF</a><a href="company.html">ABOUT</a>
+        </nav>
+        <div class="header-right">
+            <button class="login-btn" onclick="location.href='login.html'">ログイン</button>
+            <div class="search-widget">
+                <input type="text" id="keywordInput" placeholder="サイト内・商品検索">
+                <button onclick="executeSearch()">検索</button>
+                <div id="searchResult"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <span>Our Team</span>
+            <h1>スタッフ紹介</h1>
+            <p>ヨイミカメラを支える、個性豊かなスペシャリストたちをご紹介します。</p>
+        </div>
+
+        <!-- 刈谷 哲 -->
+        <div class="staff-card">
+            <div class="staff-photo">
+                <div class="staff-photo-img">
+                    <img src="images/Kariya Tetsu.webp" alt="刈谷 哲">
+                </div>
+            </div>
+            <div class="staff-info">
+                <h2 class="staff-name">刈谷 哲</h2>
+                <span class="staff-name-en">Tetsu Kariya</span>
+                <div class="staff-role">Digital Strategist / Web Administrator</div>
+                <div class="staff-detail-label">Birth Date</div>
+                <p class="staff-detail-text">
+                    1987.04.15
+                </p>
+                <div class="staff-detail-label">Career</div>
+                <p class="staff-detail-text">
+                    光蝕大学 大学院 情報科学研究科 修士課程修了。<br>
+                    2012年に大学院を修了後、大手データセンターにてサーバー保守・セキュリティ診断業務に2年間従事。2014年4月にヨイミカメラへ入社。
+                </p>
+                <div class="staff-detail-label">Favorite Lens</div>
+                <p class="staff-detail-text">
+                    ASTRAL 85mm F1.4 Prime mkII (ASTRAL)
+                </p>
+                <div class="staff-detail-label">Message</div>
+                <p class="staff-message">
+                    「デジタル技術は、写真表現の自由を守るための盾であるべきだ」という信念のもと、当サイトのデザインおよび独自の暗号化ストレージ『YOIMI Cloud』の設計・運用を一手に引き受けています。前職で培った強固なセキュリティ知識を活かし、プロフェッショナルな皆様の大切な作品を、外部のいかなる介入からも守り抜く「絶対的な金庫」を提供すること。それが私の使命です。
+                </p>
+            </div>
+        </div>
+
+        <!-- 三崎 愛観 -->
+        <div class="staff-card">
+            <div class="staff-photo">
+                <div class="staff-photo-img">
+                    <img src="images/Misaki Manami.webp" alt="三崎 愛観">
+                </div>
+            </div>
+            <div class="staff-info">
+                <h2 class="staff-name">三崎 愛観</h2>
+                <span class="staff-name-en">Manami Misaki</span>
+                <div class="staff-role">Chief Technician / Equipment Maintenance</div>
+                <div class="staff-detail-label">Birth Date</div>
+                <p class="staff-detail-text">
+                    1990.11.11
+                </p>
+                <div class="staff-detail-label">Career</div>
+                <p class="staff-detail-text">
+                    1990年生まれ。地元の公立高校を卒業後、2008年にヨイミカメラへ入社。在籍8年。先代の頃より現場で叩き上げられた、当店の機材管理の要。
+                </p>
+                <div class="staff-detail-label">Favorite Lens</div>
+                <p class="staff-detail-text">
+                    MUSEO 28-70mm F2.8 (ESPEJO)
+                </p>
+                <div class="staff-detail-label">Message</div>
+                <p class="staff-message">
+                    機材のコンディション一つで、作品の魂は変わります。高校卒業から今日まで、店内の数万点に及ぶ機材と向き合ってきました。全ての個体のシリアルナンバーと「描写の癖」を把握し、鳴海朔氏をはじめとするプロ写真家の方々が求める「最高の光」を通すよう、日々一分一秒の曇りもなくレンズを磨き上げています。機材に関する些細な違和感があれば、私にお任せください。
+                </p>
+            </div>
+        </div>
+
+        <!-- 星野 悠 -->
+        <div class="staff-card">
+            <div class="staff-photo">
+                <div class="staff-photo-img">
+                    <img src="images/Hoshino Yu.webp" alt="星野 悠">
+                </div>
+            </div>
+            <div class="staff-info">
+                <h2 class="staff-name">星野 悠</h2>
+                <span class="staff-name-en">Yu Hoshino</span>
+                <div class="staff-role">Photographer's Assistant / Field Support</div>
+                <div class="staff-detail-label">Birth Date</div>
+                <p class="staff-detail-text">
+                    1992.07.23
+                </p>
+                <div class="staff-detail-label">Career</div>
+                <p class="staff-detail-text">
+                    1992年生まれ。光蝕大学 芸術学部 写真学科を卒業後、2015年に入社。現在は写真家・鳴海朔氏に師事し、修行に励む若き写真家の卵。
+                </p>
+                <div class="staff-detail-label">Favorite Lens</div>
+                <p class="staff-detail-text">
+                    Luminar 85mm F1.4 (LUMINAR)
+                </p>
+                <div class="staff-detail-label">Message</div>
+                <p class="staff-message">
+                    大学で学んだ最新の映像理論と、師匠から受け継いだオールドレンズの美学。その両方を現場で形にすることが私の役割です。ヨイミカメラでは機材の搬入やロケ地の選定など、フィールドサポートを中心に担当しています。師匠の『Luminar 85mm』への情熱に圧倒される毎日ですが、お客様一人ひとりが追い求める「決定的な瞬間」を全力でサポートさせていただきます！
+                </p>
+            </div>
+        </div>
+
+        <!-- 業務提携セクション -->
+        <div class="page-header" style="margin-top: 80px; border-bottom-color: #c8a45a;">
+            <span style="color: #c8a45a;">Partner</span>
+            <h2 style="font-size: 24px; font-weight: 300; letter-spacing: 3px; margin: 0;">業務提携</h2>
+            <p>ヨイミカメラと提携する、プロフェッショナルをご紹介します。</p>
+        </div>
+
+        <!-- 鳴海 朔 -->
+        <div class="staff-card" style="border-color: #3a3528;">
+            <div class="staff-photo">
+                <div class="staff-photo-img" style="border-color: #c8a45a;">
+                    <img src="images/Narumi Saku.webp" alt="鳴海 朔">
+                </div>
+            </div>
+            <div class="staff-info">
+                <h2 class="staff-name">鳴海 朔</h2>
+                <span class="staff-name-en">Saku Narumi</span>
+                <div class="staff-role">Freelance Photographer / Business Partner</div>
+                <div class="staff-detail-label">Birth Date</div>
+                <p class="staff-detail-text">
+                    1971.03.06
+                </p>
+                <div class="staff-detail-label">Career</div>
+                <p class="staff-detail-text">
+                    1971年生まれ。光蝕大学 写真学科卒業。カメラ関係の職場を転々とし、その活躍が認められ国立光蝕美術館にて初の写真展を開催。現在はフリーランスカメラマンとして活躍。2002年よりヨイミカメラと業務提携を締結。
+                </p>
+                <div class="staff-detail-label">Favorite Lens</div>
+                <p class="staff-detail-text">
+                    Luminar 85mm F1.4 (LUMINAR)
+                </p>
+                <div class="staff-detail-label">Message</div>
+                <p class="staff-message">
+                    人もレンズも、少し不器用なくらいが愛嬌があって魅力的だと思わないかい？ 愛用する『Luminar 85mm』は逆光に弱く気難しいレンズだが、だからこそ「光との対話」が生まれる。レンズを付け替える時間を惜しむくらいなら、私は目の前の被写体と笑い合う時間にそれを使いたい。ヨイミカメラという場所で、あなただけの「最高の光」を共に探すのを楽しみにしているよ。
+                </p>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html">トップページへ戻る</a>
+        </div>
+    </div>
+    <footer>&copy; 2016 YOIMI CAMERA. All Rights Reserved.</footer>
+
+    <script src="search.js"></script>
+</body>
+</html>

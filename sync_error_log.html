@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sync_error_log.txt | YOIMI CLOUD</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ff00;
+            font-family: 'Courier New', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .terminal-header {
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .terminal-title {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .terminal-close {
+            color: #d9534f;
+            text-decoration: none;
+            font-size: 12px;
+            border: 1px solid #d9534f;
+            padding: 4px 12px;
+            transition: all 0.3s;
+        }
+
+        .terminal-close:hover {
+            background: #d9534f;
+            color: #fff;
+        }
+
+        .terminal-body {
+            padding: 30px 40px;
+            max-width: 900px;
+        }
+
+        .line {
+            margin: 2px 0;
+        }
+
+        .line-number {
+            color: #444;
+            display: inline-block;
+            width: 40px;
+            text-align: right;
+            margin-right: 20px;
+            user-select: none;
+        }
+
+        .comment {
+            color: #555;
+        }
+
+        .error {
+            color: #d9534f;
+        }
+
+        .warning {
+            color: #f0ad4e;
+        }
+
+        .info {
+            color: #5bc0de;
+        }
+
+        .highlight {
+            color: #ffffff;
+            background: rgba(217, 83, 79, 0.2);
+            padding: 2px 4px;
+        }
+
+        .separator {
+            color: #333;
+            margin: 15px 0;
+        }
+
+        .blink-cursor {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-header">
+        <span class="terminal-title">YOIMI CLOUD SYSTEM — sync_error_log.txt (Read Only)</span>
+        <a href="narumi_cloud.html" class="terminal-close">✕ CLOSE</a>
+    </div>
+
+    <div class="terminal-body">
+        <div class="line"><span class="line-number">01</span><span class="comment">========================================</span></div>
+        <div class="line"><span class="line-number">02</span><span class="comment">  YOIMI CAMERA CLOUD SERVICE</span></div>
+        <div class="line"><span class="line-number">03</span><span class="comment">  SYNC ERROR REPORT</span></div>
+        <div class="line"><span class="line-number">04</span><span class="comment">  Generated: 2016.10.27 02:48:07 JST</span></div>
+        <div class="line"><span class="line-number">05</span><span class="comment">========================================</span></div>
+        <div class="separator">─────────────────────────────────────────</div>
+
+        <div class="line"><span class="line-number">06</span><span class="error">[Error] Unauthorized Override Detected.</span></div>
+        <div class="line"><span class="line-number">07</span><span class="error">Target: <span class="highlight">/admin_shibata/private_vault/</span></span></div>
+        <div class="line"><span class="line-number">08</span><span class="error">Executed by Account: <span class="highlight">Admin_Kariya</span> (IP: 192.168.x.x)</span></div>
+
+        <div class="separator">─────────────────────────────────────────</div>
+
+        <div class="line"><span class="line-number">09</span><span class="warning">[Warn] Elevated privilege escalation detected.</span></div>
+        <div class="line"><span class="line-number">10</span><span class="warning">[Warn] Admin_Kariya accessed restricted partition without 2FA.</span></div>
+
+        <div class="separator">─────────────────────────────────────────</div>
+
+        <div class="line"><span class="line-number">11</span><span class="info">[Info] Deletion batch initiated:</span></div>
+        <div class="line"><span class="line-number">12</span>  → /user_narumi/portfolio/2016_Portrait_Session_Autumn/ ... <span class="error">PURGED</span></div>
+        <div class="line"><span class="line-number">13</span>  → /user_narumi/portfolio/Luminar_Lenses_Experiment_Archive/ ... <span class="error">PURGED</span></div>
+        <div class="line"><span class="line-number">14</span>  → /user_narumi/portfolio/DSC_0894_Luminar85Test.ARWL ... <span class="error">CORRUPTED</span></div>
+        <div class="line"><span class="line-number">15</span>  → /user_narumi/portfolio/DSC_0895_Luminar85Test.ARWL ... <span class="error">CORRUPTED</span></div>
+        <div class="line"><span class="line-number">16</span>  → /user_narumi/portfolio/DSC_0896_Luminar85Test.ARWL ... <span class="error">ACCESS REVOKED</span></div>
+        <div class="line"><span class="line-number">17</span>  → /user_narumi/documents/Memories_of_Light_Draft.docx ... <span class="error">PURGED</span></div>
+        <div class="line"><span class="line-number">18</span>  → /user_narumi/documents/Client_NDA_Agreement_2016.pdf ... <span class="error">ACCESS REVOKED</span></div>
+        <div class="line"><span class="line-number">19</span>  → /user_narumi/documents/Studio_Schedule_Oct.xlsx ... <span class="error">PURGED</span></div>
+        <div class="line"><span class="line-number">20</span>  ...</div>
+        <div class="line"><span class="line-number">21</span>  <span class="info">[Info] Processing file 12,477 of 12,482...</span></div>
+
+        <div class="separator">─────────────────────────────────────────</div>
+
+        <div class="line"><span class="line-number">22</span><span class="error">[FATAL] SyncError 0x8024401C — Process interrupted.</span></div>
+        <div class="line"><span class="line-number">23</span><span class="warning">[Warn] Remaining files: 6 (deletion incomplete)</span></div>
+        <div class="line"><span class="line-number">24</span><span class="info">[Info] Surviving files:</span></div>
+        <div class="line"><span class="line-number">25</span>  → DSC_1042_AutumnLight.ARWL ................. <span style="color: #5cb85c;">INTACT</span></div>
+        <div class="line"><span class="line-number">26</span>  → DSC_1043_GoldenHour_Portrait.ARWL ......... <span style="color: #5cb85c;">INTACT</span></div>
+        <div class="line"><span class="line-number">27</span>  → Final_Exhibition_Print_003.jpg ............ <span style="color: #5cb85c;">INTACT</span></div>
+        <div class="line"><span class="line-number">28</span>  → sync_error_log.txt ....................... <span style="color: #5cb85c;">INTACT (this file)</span></div>
+
+        <div class="separator">─────────────────────────────────────────</div>
+
+        <div class="line"><span class="line-number">29</span><span class="comment">// NOTE: Admin_Kariya session forcefully terminated by system watchdog.</span></div>
+        <div class="line"><span class="line-number">30</span><span class="comment">// No rollback performed. Data recovery status: UNKNOWN.</span></div>
+        <div class="line"><span class="line-number">31</span><span class="comment">// Contact system administrator immediately.</span></div>
+
+        <div class="separator">─────────────────────────────────────────</div>
+        <div class="line"><span class="line-number">32</span><span class="comment">EOF</span></div>
+        <div class="line"><span class="line-number">  </span><span class="blink-cursor" style="color: #00ff00;">█</span></div>
+    </div>
+</body>
+</html>
