@@ -309,12 +309,18 @@
             text-align: right;
         }
 
-        /* Reply Indicator */
-        .reply-mark {
+        /* Reply & Attachment Indicators */
+        .reply-mark,
+        .attachment-icon {
             font-size: 12px;
             color: var(--accent);
             display: inline-flex;
             align-items: center;
+        }
+
+        .attachment-icon {
+            color: var(--text-muted);
+            margin-left: 5px;
         }
 
         /* Message View */
@@ -677,17 +683,14 @@
 - ASTRAL 70-200mm F2.8 (予備)
 - 大型カーボン三脚、照明用レフ板一式
 
-※先生のメインである「Luminar 85mm F1.4」および予備バッテリー等は、全てご本人が直接管理されます。
-また、三崎さんに丁寧にメンテしていただいた機材は、すべて防湿ケースに収めました。
-
 明日は早朝4時に先生と玲奈さんをピックアップし、5時半には現地入りして霧の状況を確認します。
 私が先日のロケハンで掴んだデータ通りなら、夜明け直後に最高の光が差すはずです。先生に恥じないよう、アシスタントとして全力を尽くします。
 
 よろしくお願いいたします。`,
-                unread: true,
+                unread: false,
                 replied: false
             },
-        {
+            {
                 id: 4,
                 folder: 'sent',
                 to: '柴田 健吾',
@@ -709,14 +712,19 @@
 
 現在、第2保管庫の湿度管理および防犯センサーの動作はすべて正常です。
 
-明日の山岳撮影に使用する機材一式については、先ほど星野君と共に最終チェックを行い、貸出準備を整えました。
+明日の山岳撮影に使用する機材一式については、先ほど星野君と共に最終チェックを行い, 貸出準備を整えました。
 鳴海先生の Luminar 85mm F1.4 と星野君の MUSEO 28-70mm F2.8 も、当店の基準に則り完璧に調整を終えて返却済みとしています。
 
 鳴海先生が同行されるとのことで、予備のバッテリーと防滴カバーも多めに用意してあります。山の上は天候が変わりやすいですから、万全を期しました。
 
-以上、よろしくお願いいたします。`,
+以上、よろしくお願いいたします。
+
+---
+添付ファイルのパスワードは「riantdoraeeruaitkr」です。
+---`,
                 unread: false,
-                replied: true
+                replied: true,
+                attachment: { name: 'ledger_20161025.csv', url: 'ledger_misaki.html' }
             },
             {
                 id: 5,
@@ -731,7 +739,7 @@
 お疲れ様です、柴田です。
 台帳の報告、受領いたしました。
 
-三崎さんが管理してくれているおかげで、私は安心して店全体の運営に集中できています。第2保管庫の湿度管理やセンサーのチェックも、三崎さんの「目」を通していることが何よりの保証です。いつも丁寧な仕事をありがとう。
+三崎さんが管理してくれているおかげで、私は安心して店全体の運営に集中できています。第2保管庫の湿度管理やセンサーのチェックも、三崎さんの目を通していることが何よりの保証です。いつも丁寧な仕事をありがとう。
 
 明日の山岳撮影、鳴海先生の Luminar 85mm と星野君の機材の最終チェックも完了したとのこと、承知しました。防滴カバーの件も助かります。山の天気は気まぐれですから、三崎さんの細やかな配慮が、現場での良い作品作りに繋がるはずです。
 
@@ -739,7 +747,7 @@
 明日、彼らが無事に戻ってくるのを楽しみに待ちましょう。
 
 よろしくお願いします。`,
-                unread: true,
+                unread: false,
                 replied: false
             }
         ];
@@ -771,6 +779,7 @@
                         <div class="email-subject">
                             ${e.replied ? '<span class="reply-mark">↩</span>' : ''}
                             ${e.subject}
+                            ${e.attachment ? '<span class="attachment-icon">📎</span>' : ''}
                         </div>
                         <div class="email-snippet">${e.snippet}</div>
                     </div>
@@ -819,6 +828,14 @@
                     </div>
                 </div>
                 <div class="msg-body">${email.body.replace(/\n/g, '<br>')}</div>
+                ${email.attachment ? `
+                <div class="msg-attachments" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Attachments (1)</div>
+                    <a href="${email.attachment.url}" class="attachment-box" style="display: inline-flex; align-items: center; gap: 10px; padding: 10px 15px; background: #222; border: 1px solid var(--border); border-radius: 4px; color: var(--text-main); text-decoration: none; transition: 0.3s; font-size: 14px;">
+                        <span>📄</span>
+                        <span>${email.attachment.name}</span>
+                    </a>
+                </div>` : ''}
             `;
 
             if (window.innerWidth < 1024) {
@@ -845,6 +862,17 @@
                 document.getElementById('empty-state').style.display = 'flex';
                 document.getElementById('msg-content').classList.remove('active');
             }
+        }
+
+        function handleAttachmentClick(e, url) {
+            e.preventDefault();
+            const pwd = prompt("添付ファイルはパスワードで保護されています。パスワードを入力してください：");
+            if (pwd === "r i a n t d o r a e e r u a i t k r" || pwd === "riantdoraeeruaitkr") {
+                window.location.href = url;
+            } else if (pwd !== null) {
+                alert("パスワードが違います。");
+            }
+            return false;
         }
 
         // Init
