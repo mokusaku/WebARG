@@ -342,6 +342,104 @@
                 margin-bottom: 10px;
             }
         }
+
+        /* 画像モーダルとExif表示用のスタイル */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            overflow: auto;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            max-width: 900px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        .modal-body {
+            display: flex;
+            flex-direction: row;
+        }
+        @media (max-width: 768px) {
+            .modal-body {
+                flex-direction: column;
+            }
+        }
+        .modal-image {
+            flex: 2;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-image img {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border: 1px solid #333;
+        }
+        .modal-exif {
+            flex: 1;
+            padding: 30px;
+            background: #222;
+            border-left: 1px solid #333;
+        }
+        @media (max-width: 768px) {
+            .modal-exif {
+                border-left: none;
+                border-top: 1px solid #333;
+            }
+        }
+        .modal-exif h3 {
+            margin: 0 0 20px 0;
+            font-size: 16px;
+            color: var(--accent-color);
+            letter-spacing: 2px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+        }
+        .exif-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 12px;
+            border-bottom: 1px dotted #444;
+            padding-bottom: 5px;
+        }
+        .exif-label {
+            color: #888;
+        }
+        .exif-value {
+            color: #fff;
+            font-weight: bold;
+            text-align: right;
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            color: #888;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 10;
+        }
+        .modal-close:hover {
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -460,21 +558,21 @@
                     <!-- ─── 削除プロセス中断により消え残ったファイル ─── -->
                     <li style="padding: 15px 10px; border-bottom: 1px solid #333; color: #5cb85c; font-size: 12px; letter-spacing: 1px;">── Deletion process interrupted (SyncError) ──</li>
 
-                    <li class="file-item surviving" onclick="window.open('images/Portrait_1.webp','_blank')" title="クリックして画像を表示">
+                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_1.webp', 'DSL_0027.jpg', '2016/04/18', 'LUMINAR9S2', 'LUMINAR85F14F', '2.0', '100', '1/250', 'Narumi Saku')" title="クリックして画像とExifを表示">
                         <div class="file-icon">JPG</div>
                         <div class="file-info">
                             <span class="file-name">DSL_0027.jpg</span>
                             <span class="file-meta">JPG Format | Updated: 2016.04.18 — <span style="color: #5cb85c;">INTACT</span></span>
                         </div>
                     </li>
-                    <li class="file-item surviving" onclick="window.open('images/Portrait_2.webp','_blank')" title="クリックして画像を表示">
+                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_2.webp', 'DSL_0342.jpg', '2016/08/07', 'LUMINAR9S2', 'LUMINAR85F14F', '1.4', '100', '1/800', 'Narumi Saku')" title="クリックして画像とExifを表示">
                         <div class="file-icon">JPG</div>
                         <div class="file-info">
                             <span class="file-name">DSL_0342.jpg</span>
                             <span class="file-meta">JPG Format | Updated: 2016.08.07 — <span style="color: #5cb85c;">INTACT</span></span>
                         </div>
                     </li>
-                    <li class="file-item surviving" onclick="window.open('images/Portrait_3.webp','_blank')" title="クリックして画像を表示">
+                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_3.webp', 'DSL_1159.jpg', '2016/09/01', 'LUMINAR9S2', 'LUMINAR85F14F', '2.0', '640', '1/150', 'Narumi Saku')" title="クリックして画像とExifを表示">
                         <div class="file-icon">JPG</div>
                         <div class="file-info">
                             <span class="file-name">DSL_1159.jpg</span>
@@ -529,6 +627,80 @@
     </div>
 
     <footer>&copy; 2016 YOIMI CAMERA Cloud Service Division. All Rights Reserved.</footer>
+    
+    <!-- Exifモーダル -->
+    <div id="exifModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeExifModal()">✕</div>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modalImgSrc" src="" alt="Preview">
+                </div>
+                <div class="modal-exif">
+                    <h3>FILE METADATA</h3>
+                    <div class="exif-item">
+                        <span class="exif-label">File Name</span>
+                        <span class="exif-value" id="exifFileName"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">Date</span>
+                        <span class="exif-value" id="exifDate"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">Model</span>
+                        <span class="exif-value" id="exifModel"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">Lens</span>
+                        <span class="exif-value" id="exifLens"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">Aperture</span>
+                        <span class="exif-value" id="exifAperture"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">ISO</span>
+                        <span class="exif-value" id="exifIso"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">Shutter Speed</span>
+                        <span class="exif-value" id="exifShutter"></span>
+                    </div>
+                    <div class="exif-item" style="margin-top: 30px; border-bottom: none;">
+                        <span class="exif-label">Copyright</span>
+                        <span class="exif-value" id="exifCopyright" style="color: #888;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="search.js"></script>
+    <script>
+        function openExifModal(imgSrc, fileName, date, model, lens, aperture, iso, shutter, copyright) {
+            document.getElementById('modalImgSrc').src = imgSrc;
+            document.getElementById('exifFileName').innerText = fileName;
+            document.getElementById('exifDate').innerText = date;
+            document.getElementById('exifModel').innerText = model;
+            document.getElementById('exifLens').innerText = lens;
+            document.getElementById('exifAperture').innerText = 'f/' + aperture;
+            document.getElementById('exifIso').innerText = iso;
+            document.getElementById('exifShutter').innerText = shutter + ' sec';
+            document.getElementById('exifCopyright').innerText = '© ' + copyright;
+            
+            document.getElementById('exifModal').classList.add('active');
+        }
+
+        function closeExifModal() {
+            document.getElementById('exifModal').classList.remove('active');
+        }
+
+        // 背景クリックで閉じる
+        document.getElementById('exifModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeExifModal();
+            }
+        });
+    </script>
 </body>
 </html>
