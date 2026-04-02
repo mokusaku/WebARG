@@ -448,27 +448,11 @@
 </head>
 
 <body>
-    <!-- トップバー -->
-    <div class="top-bar">
-        <div class="top-bar-left">
-            <a href="index.html" class="brand-logo">
-                YOIMI CAMERA
-                <small>INTERNAL SYSTEM</small>
-            </a>
-            <div class="separator"></div>
-            <span class="page-id">Equipment Custody Ledger</span>
-        </div>
-        <div class="top-bar-right">
-            <div class="user-badge">
-                <span class="name">三崎 愛観</span>
-                <span>Chief Technician</span>
-            </div>
-            <a href="login.html" class="back-link">LOGOUT</a>
-        </div>
-    </div>
-
     <!-- メインコンテンツ -->
     <div class="container">
+        <div style="text-align: right; margin-bottom: 20px;">
+            <a href="mailbox_misaki.html" class="back-link" id="backLink">メールボックスに戻る</a>
+        </div>
         <div class="ledger-header">
             <h1>機材預かり・メンテナンス台帳</h1>
             <p>YOIMI CAMERA — お客様機材の受入・メンテナンス記録</p>
@@ -522,7 +506,7 @@
 
         <div class="ledger-footer">
             <span>管理責任者: 三崎 愛観 (Chief Technician)</span>
-            <span class="timestamp">Last Updated: 2016-10-25 09:00</span>
+            <span class="timestamp">Last Updated: 2016-10-25 18:12</span>
         </div>
     </div>
 
@@ -574,13 +558,21 @@
             { id: 'YM-L870', date: '2016-10-20', name: '長谷川 亮', equipment: 'Luminar 20mm F1.4', sn: 'LU-2014-5055', returned: false },
             { id: 'YM-L871', date: '2016-10-21', name: '村上 祥子', equipment: 'ASTRAL 85mm F1.4 Prime mkII', sn: 'AS-8514-6066', returned: false },
             { id: 'YM-L872', date: '2016-10-22', name: '近藤 拓也', equipment: 'MUSEO 20mm F1.8', sn: 'MU-2018-1120', returned: false },
-            { id: 'YM-L873', date: '2016-10-23', name: '石井 里奈', equipment: 'Luminar 50mm F1.4', sn: 'LU-5014-7077', returned: false },
-            { id: 'YM-L874', date: '2016-10-24', name: '遠藤 慎吾', equipment: 'ASTRAL 16-35mm F2.8 Smart', sn: 'AS-1635-4421', returned: false },
-            { id: 'YM-L875', date: '2016-10-24', name: '菊池 彩', equipment: 'MUSEO 20mm F1.8', sn: 'MU-2018-1357', returned: true },
-            { id: 'YM-L876', date: '2016-10-25', name: '坂本 竜也', equipment: 'Luminar 85mm F1.4', sn: 'LU-8514-8088', returned: false },
-            { id: 'YM-L877', date: '2016-10-25', name: '鳴海 朔', equipment: 'Luminar 85mm F1.4', sn: 'LU-8514-0001', returned: true },
-            { id: 'YM-L878', date: '2016-10-25', name: '星野 悠', equipment: 'MUSEO 28-70mm F2.8', sn: 'MU-2870-1122', returned: true },
+            { id: 'YM-L873', date: '2016-10-24', name: '堂島 玲奈', equipment: 'ASTRAL 85mm F1.4 Prime mkII', sn: 'AS-8514-9999', returned: true },
+            { id: 'YM-L874', date: '2016-10-23', name: '石井 里奈', equipment: 'Luminar 50mm F1.4', sn: 'LU-5014-7077', returned: false },
+            { id: 'YM-L875', date: '2016-10-24', name: '遠藤 慎吾', equipment: 'ASTRAL 16-35mm F2.8 Smart', sn: 'AS-1635-4421', returned: false },
+            { id: 'YM-L876', date: '2016-10-24', name: '菊池 彩', equipment: 'MUSEO 20mm F1.8', sn: 'MU-2018-1357', returned: true },
+            { id: 'YM-L877', date: '2016-10-25', name: '坂本 竜也', equipment: 'Luminar 85mm F1.4', sn: 'LU-8514-8088', returned: false },
+            { id: 'YM-L878', date: '2016-10-25', name: '鳴海 朔', equipment: 'Luminar 85mm F1.4', sn: 'LU-8514-0001', returned: true },
+            { id: 'YM-L879', date: '2016-10-25', name: '星野 悠', equipment: 'MUSEO 28-70mm F2.8', sn: 'MU-2870-1122', returned: true },
+            { id: 'YM-L880', date: '2016-10-25', name: '星野 悠', equipment: 'ASTRAL 70-200mm F2.8 Prime', sn: 'AS-7028-5500', returned: true },
         ];
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (document.referrer.includes('mailbox_shibata.html')) {
+                document.getElementById('backLink').href = 'mailbox_shibata.html';
+            }
+        });
 
         let currentFilter = 'all';
 
