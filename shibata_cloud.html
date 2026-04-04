@@ -124,6 +124,47 @@
             margin: 0;
         }
 
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 10px;
+            border-bottom: 1px solid #333;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .file-item:hover {
+            background: #333;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: #444;
+            border-radius: 4px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .file-info {
+            flex-grow: 1;
+        }
+
+        .file-name {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .file-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
         .empty-state {
             text-align: center;
             padding: 50px 0;
@@ -191,6 +232,120 @@
                 margin-top: 20px;
                 text-align: left;
             }
+            .user-info h1 {
+                font-size: 22px;
+            }
+            .file-name {
+                word-break: break-all;
+                font-size: 13px;
+            }
+            .file-meta {
+                font-size: 11px;
+                word-break: break-all;
+            }
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+
+        /* 画像モーダルとExif表示用のスタイル */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            overflow: auto;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            max-width: 900px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        .modal-body {
+            display: flex;
+            flex-direction: row;
+        }
+        @media (max-width: 768px) {
+            .modal-body {
+                flex-direction: column;
+            }
+        }
+        .modal-image {
+            flex: 2;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-image img {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border: 1px solid #333;
+        }
+        .modal-exif {
+            flex: 1;
+            padding: 30px;
+            background: #222;
+            border-left: 1px solid #333;
+        }
+        @media (max-width: 768px) {
+            .modal-exif {
+                border-left: none;
+                border-top: 1px solid #333;
+            }
+        }
+        .modal-exif h3 {
+            margin: 0 0 20px 0;
+            font-size: 16px;
+            color: var(--accent-color);
+            letter-spacing: 2px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+        }
+        .exif-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 12px;
+            border-bottom: 1px dotted #444;
+            padding-bottom: 5px;
+        }
+        .exif-label {
+            color: #888;
+        }
+        .exif-value {
+            color: #fff;
+            font-weight: bold;
+            text-align: right;
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            color: #888;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 10;
+        }
+        .modal-close:hover {
+            color: #fff;
         }
     </style>
 </head>
@@ -228,12 +383,29 @@
             <div class="file-list-section">
                 <div class="section-header">
                     <h2>FILE MANAGER</h2>
-                    <span style="font-size: 12px; color: var(--accent-color);">Total: 0 files</span>
+                    <span style="font-size: 12px; color: var(--accent-color);">Total: 3 files</span>
                 </div>
                 <ul class="file-list">
-                    <li class="empty-state">
-                        ファイルが存在しません。<br>
-                        データのアップロードを開始してください。
+                    <li class="file-item" onclick="openExifModal('images/Portrait_5.webp', 'DSL_2408.png', '2016/10/26', 'LUMINAR9S2', 'LUMINAR85F14F', 'AS-8514-9999', '5.6', '640', '1/800', 'Narumi Saku')" title="クリックして画像とExifを表示">
+                        <div class="file-icon">PNG</div>
+                        <div class="file-info">
+                            <span class="file-name">DSL_2408.png</span>
+                            <span class="file-meta">PNG Format | Updated: 2016.10.26</span>
+                        </div>
+                    </li>
+                    <li class="file-item" onclick="openExifModal('images/Portrait_6.webp', 'DSL_2409.png', '2016/10/26', 'LUMINAR9S2', 'LUMINAR85F14F', 'AS-8514-9999', '5.6', '640', '1/800', 'Narumi Saku')" title="クリックして画像とExifを表示">
+                        <div class="file-icon">PNG</div>
+                        <div class="file-info">
+                            <span class="file-name">DSL_2409.png</span>
+                            <span class="file-meta">PNG Format | Updated: 2016.10.26</span>
+                        </div>
+                    </li>
+                    <li class="file-item" onclick="openExifModal('images/Portrait_7_Blur.webp', 'DSL_2410.png', '2016/10/26', 'LUMINAR9S2', 'LUMINAR85F14F', 'AS-8514-9999', '11', '800', '1/150', 'Narumi Saku')" title="クリックして画像とExifを表示">
+                        <div class="file-icon">PNG</div>
+                        <div class="file-info">
+                            <span class="file-name">DSL_2410.png</span>
+                            <span class="file-meta">PNG Format | Updated: 2016.10.26</span>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -253,6 +425,85 @@
     </div>
 
     <footer>&copy; 2016 YOIMI CAMERA Cloud Service Division. All Rights Reserved.</footer>
+    
+    <!-- Exifモーダル -->
+    <div id="exifModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeExifModal()">✕</div>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modalImgSrc" src="" alt="Preview">
+                </div>
+                <div class="modal-exif">
+                    <h3>FILE METADATA</h3>
+                    <div class="exif-item">
+                        <span class="exif-label">File Name</span>
+                        <span class="exif-value" id="exifFileName"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">Date</span>
+                        <span class="exif-value" id="exifDate"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">Model</span>
+                        <span class="exif-value" id="exifModel"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">Lens</span>
+                        <span class="exif-value" id="exifLens"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">S/N</span>
+                        <span class="exif-value" id="exifSN"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">Aperture</span>
+                        <span class="exif-value" id="exifAperture"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">ISO</span>
+                        <span class="exif-value" id="exifIso"></span>
+                    </div>
+                    <div class="exif-item">
+                        <span class="exif-label">Shutter Speed</span>
+                        <span class="exif-value" id="exifShutter"></span>
+                    </div>
+                    <div class="exif-item" style="margin-top: 30px; border-bottom: none;">
+                        <span class="exif-label">Copyright</span>
+                        <span class="exif-value" id="exifCopyright" style="color: #888;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="search.js"></script>
+    <script>
+        function openExifModal(imgSrc, fileName, date, model, lens, sn, aperture, iso, shutter, copyright) {
+            document.getElementById('modalImgSrc').src = imgSrc;
+            document.getElementById('exifFileName').innerText = fileName;
+            document.getElementById('exifDate').innerText = date;
+            document.getElementById('exifModel').innerText = model;
+            document.getElementById('exifLens').innerText = lens;
+            document.getElementById('exifSN').innerText = sn;
+            document.getElementById('exifAperture').innerText = 'f/' + aperture;
+            document.getElementById('exifIso').innerText = iso;
+            document.getElementById('exifShutter').innerText = shutter + ' sec';
+            document.getElementById('exifCopyright').innerText = '© ' + copyright;
+            
+            document.getElementById('exifModal').classList.add('active');
+        }
+
+        function closeExifModal() {
+            document.getElementById('exifModal').classList.remove('active');
+        }
+
+        // 背景クリックで閉じる
+        document.getElementById('exifModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeExifModal();
+            }
+        });
+    </script>
 </body>
 </html>

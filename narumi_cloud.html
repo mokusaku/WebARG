@@ -558,28 +558,28 @@
                     <!-- ─── 削除プロセス中断により消え残ったファイル ─── -->
                     <li style="padding: 15px 10px; border-bottom: 1px solid #333; color: #5cb85c; font-size: 12px; letter-spacing: 1px;">── Deletion process interrupted (SyncError) ──</li>
 
-                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_1.webp', 'DSL_0027.jpg', '2016/04/18', 'LUMINAR9S2', 'LUMINAR85F14F', '2.0', '100', '1/250', 'Narumi Saku')" title="クリックして画像とExifを表示">
+                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_1.webp', 'DSL_0027.jpg', '2016/04/18', 'LUMINAR9S2', 'LUMINAR85F14F', 'LU-8514-0001', '2.0', '100', '1/250', 'Narumi Saku')" title="クリックして画像とExifを表示">
                         <div class="file-icon">JPG</div>
                         <div class="file-info">
                             <span class="file-name">DSL_0027.jpg</span>
                             <span class="file-meta">JPG Format | Updated: 2016.04.18 — <span style="color: #5cb85c;">INTACT</span></span>
                         </div>
                     </li>
-                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_2.webp', 'DSL_0342.jpg', '2016/08/07', 'LUMINAR9S2', 'LUMINAR85F14F', '1.4', '100', '1/800', 'Narumi Saku')" title="クリックして画像とExifを表示">
+                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_2.webp', 'DSL_0342.jpg', '2016/08/07', 'LUMINAR9S2', 'LUMINAR85F14F', 'LU-8514-0001', '1.4', '100', '1/800', 'Narumi Saku')" title="クリックして画像とExifを表示">
                         <div class="file-icon">JPG</div>
                         <div class="file-info">
                             <span class="file-name">DSL_0342.jpg</span>
                             <span class="file-meta">JPG Format | Updated: 2016.08.07 — <span style="color: #5cb85c;">INTACT</span></span>
                         </div>
                     </li>
-                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_3.webp', 'DSL_1159.jpg', '2016/09/01', 'LUMINAR9S2', 'LUMINAR85F14F', '2.0', '640', '1/150', 'Narumi Saku')" title="クリックして画像とExifを表示">
+                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_3.webp', 'DSL_1159.jpg', '2016/09/01', 'LUMINAR9S2', 'LUMINAR85F14F', 'LU-8514-0001', '2.0', '640', '1/150', 'Narumi Saku')" title="クリックして画像とExifを表示">
                         <div class="file-icon">JPG</div>
                         <div class="file-info">
                             <span class="file-name">DSL_1159.jpg</span>
                             <span class="file-meta">JPG Format | Updated: 2016.09.01 — <span style="color: #5cb85c;">INTACT</span></span>
                         </div>
                     </li>
-                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_4.webp', 'DSL_2398.ARW', '2016/10/26', 'LUMINAR9S2', 'LUMINAR85F14F', '1.4', '100', '1/800', 'Narumi Saku')" title="クリックして画像とExifを表示">
+                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_4.webp', 'DSL_2398.ARW', '2016/10/26', 'LUMINAR9S2', 'LUMINAR85F14F', 'LU-8514-0001', '1.4', '100', '1/800', 'Narumi Saku')" title="クリックして画像とExifを表示">
                         <div class="file-icon">RAW</div>
                         <div class="file-info">
                             <span class="file-name">DSL_2398.ARW</span>
@@ -662,6 +662,10 @@
                         <span class="exif-value" id="exifLens"></span>
                     </div>
                     <div class="exif-item">
+                        <span class="exif-label">S/N</span>
+                        <span class="exif-value" id="exifSN"></span>
+                    </div>
+                    <div class="exif-item">
                         <span class="exif-label">Aperture</span>
                         <span class="exif-value" id="exifAperture"></span>
                     </div>
@@ -684,12 +688,13 @@
 
     <script src="search.js"></script>
     <script>
-        function openExifModal(imgSrc, fileName, date, model, lens, aperture, iso, shutter, copyright) {
+        function openExifModal(imgSrc, fileName, date, model, lens, sn, aperture, iso, shutter, copyright) {
             document.getElementById('modalImgSrc').src = imgSrc;
             document.getElementById('exifFileName').innerText = fileName;
             document.getElementById('exifDate').innerText = date;
             document.getElementById('exifModel').innerText = model;
             document.getElementById('exifLens').innerText = lens;
+            document.getElementById('exifSN').innerText = sn;
             document.getElementById('exifAperture').innerText = 'f/' + aperture;
             document.getElementById('exifIso').innerText = iso;
             document.getElementById('exifShutter').innerText = shutter + ' sec';
