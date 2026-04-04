@@ -165,6 +165,38 @@
             color: #666;
         }
 
+        /* 破損・削除済みファイルのスタイル */
+        .file-item.corrupted {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .file-item.corrupted:hover {
+            background: transparent;
+        }
+        .file-item.corrupted .file-icon {
+            background: #3a1515;
+            color: #d9534f;
+        }
+        .file-item.corrupted .file-name {
+            text-decoration: line-through;
+            color: #666;
+        }
+        .file-item.corrupted .file-meta {
+            color: #d9534f;
+        }
+
+        /* 生き残ったファイル（緑のアクセント） */
+        .file-item.surviving .file-icon {
+            background: #1a3a1a;
+            color: #5cb85c;
+        }
+        .file-item.surviving .file-name {
+            color: #ffffff;
+        }
+        .file-item.surviving .file-meta span {
+            color: #5cb85c;
+        }
+
         .empty-state {
             text-align: center;
             padding: 50px 0;
@@ -199,6 +231,14 @@
 
         .activity-desc {
             font-size: 13px;
+        }
+
+        .activity-desc.error {
+            color: #d9534f;
+        }
+
+        .activity-desc.warning {
+            color: #f0ad4e;
         }
 
         footer {
@@ -372,9 +412,9 @@
                 <p>Welcome back, <strong>柴田 健吾</strong> 様 (Member ID: Manager_Private)</p>
             </div>
             <div class="storage-status">
-                <div class="storage-text">0.00 TB / 5.00 TB used (0%)</div>
+                <div class="storage-text">0.18 TB / 5.00 TB used (3.6%)</div>
                 <div class="storage-bar">
-                    <div class="storage-fill"></div>
+                    <div class="storage-fill" style="width: 3.6%;"></div>
                 </div>
             </div>
         </div>
@@ -383,28 +423,124 @@
             <div class="file-list-section">
                 <div class="section-header">
                     <h2>FILE MANAGER</h2>
-                    <span style="font-size: 12px; color: var(--accent-color);">Total: 3 files</span>
+                    <span style="font-size: 12px; color: var(--accent-color);">Total: 15 files</span>
                 </div>
                 <ul class="file-list">
-                    <li class="file-item" onclick="openExifModal('images/Portrait_5.webp', 'DSL_2408.png', '2016/10/26', 'LUMINAR9S2', 'LUMINAR85F14F', 'AS-8514-9999', '5.6', '640', '1/800', 'Narumi Saku')" title="クリックして画像とExifを表示">
+                    <!-- 破損・削除済みファイル -->
+                    <li class="file-item corrupted" title="アクセス権限がありません">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">20160415_Inventory_Q1.xlsx</span>
+                            <span class="file-meta">DELETED | 0 byte | Purged: 2016.10.27 02:48</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Lens_Order_Form_Apr.pdf</span>
+                            <span class="file-meta">CORRUPTED | Broken Image | File header destroyed</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Portrait_Session_May_Backup.zip</span>
+                            <span class="file-meta">ACCESS DENIED | Permission revoked by Admin</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Camera_Body_Stock_List.csv</span>
+                            <span class="file-name" style="text-decoration: line-through; color: #666; font-size: 15px;">Camera_Body_Stock_List.csv</span>
+                            <span class="file-meta">DELETED | 0 byte | Purged: 2016.10.27 02:48</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Store_Monthly_Report_June.docx</span>
+                            <span class="file-meta">CORRUPTED | Broken Document | Header checksum error</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Repair_Estimate_Ref0098.pdf</span>
+                            <span class="file-meta">DELETED | 0 byte | Purged: 2016.10.27 02:48</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Staff_Schedule_Aug_Draft.xlsx</span>
+                            <span class="file-meta">DELETED | 0 byte | Purged: 2016.10.27 02:49</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Customer_Database_2016_v2.db</span>
+                            <span class="file-meta">ACCESS DENIED | Permission revoked by Admin</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Event_Photo_School_Session.zip</span>
+                            <span class="file-meta">CORRUPTED | Archive structure damaged</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Lease_Agreement_Annex.pdf</span>
+                            <span class="file-meta">DELETED | 0 byte | Purged: 2016.10.27 02:49</span>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-item corrupted" style="border-bottom: none; padding: 0;">
+                            <div class="file-info" style="padding-left: 55px;">
+                                <span class="file-name">Luminar_Marketing_Assets.rar</span>
+                                <span class="file-meta">ACCESS DENIED | Admin Locked</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="file-item corrupted">
+                        <div class="file-icon">✕</div>
+                        <div class="file-info">
+                            <span class="file-name">Inventory_Closing_Oct_Pre.xlsx</span>
+                            <span class="file-meta">DELETED | 0 byte | Purged: 2016.10.27 02:49</span>
+                        </div>
+                    </li>
+                    <li style="padding: 15px 10px; border-bottom: 1px solid #333; color: #5bc0de; font-size: 11px; letter-spacing: 1px; opacity: 0.7;">── Protected Files (Restored/Intact) ──</li>
+                    <ul class="file-list">
+                    <li class="file-item surviving" onclick="location.href='memo_201610260115.html'" title="クリックして内容を確認">
+                        <div class="file-icon">TXT</div>
+                        <div class="file-info">
+                            <span class="file-name">memo_201610260115.txt</span>
+                            <span class="file-meta">Private Memo | 0.8 KB | Updated: 2016.10.27 01:15 — <span style="color: #5cb85c;">INTACT</span></span>
+                        </div>
+                    </li>
+                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_5.webp', 'DSL_2408.png', '2016/10/26', 'LUMINAR9S2', 'LUMINAR85F14F', 'AS-8514-9999', '5.6', '640', '1/800', 'Narumi Saku')" title="クリックして画像とExifを表示">
                         <div class="file-icon">PNG</div>
                         <div class="file-info">
                             <span class="file-name">DSL_2408.png</span>
-                            <span class="file-meta">PNG Format | Updated: 2016.10.26</span>
+                            <span class="file-meta">PNG Format | Updated: 2016.10.26 — <span style="color: #5cb85c;">INTACT</span></span>
                         </div>
                     </li>
-                    <li class="file-item" onclick="openExifModal('images/Portrait_6.webp', 'DSL_2409.png', '2016/10/26', 'LUMINAR9S2', 'LUMINAR85F14F', 'AS-8514-9999', '5.6', '640', '1/800', 'Narumi Saku')" title="クリックして画像とExifを表示">
+                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_6.webp', 'DSL_2409.png', '2016/10/26', 'LUMINAR9S2', 'LUMINAR85F14F', 'AS-8514-9999', '5.6', '640', '1/800', 'Narumi Saku')" title="クリックして画像とExifを表示">
                         <div class="file-icon">PNG</div>
                         <div class="file-info">
                             <span class="file-name">DSL_2409.png</span>
-                            <span class="file-meta">PNG Format | Updated: 2016.10.26</span>
+                            <span class="file-meta">PNG Format | Updated: 2016.10.26 — <span style="color: #5cb85c;">INTACT</span></span>
                         </div>
                     </li>
-                    <li class="file-item" onclick="openExifModal('images/Portrait_7_Blur.webp', 'DSL_2410.png', '2016/10/26', 'LUMINAR9S2', 'LUMINAR85F14F', 'AS-8514-9999', '11', '800', '1/150', 'Narumi Saku')" title="クリックして画像とExifを表示">
+                    <li class="file-item surviving" onclick="openExifModal('images/Portrait_7_Blur.webp', 'DSL_2410.png', '2016/10/26', 'LUMINAR9S2', 'LUMINAR85F14F', 'AS-8514-9999', '11', '800', '1/150', 'Narumi Saku')" title="クリックして画像とExifを表示">
                         <div class="file-icon">PNG</div>
                         <div class="file-info">
                             <span class="file-name">DSL_2410.png</span>
-                            <span class="file-meta">PNG Format | Updated: 2016.10.26</span>
+                            <span class="file-meta">PNG Format | Updated: 2016.10.26 — <span style="color: #5cb85c;">INTACT</span></span>
                         </div>
                     </li>
                 </ul>
@@ -416,8 +552,32 @@
                 </div>
                 <ul class="activity-list">
                     <li class="activity-item">
-                        <span class="activity-time">2016.10.31</span>
+                        <span class="activity-time">2016.10.31 09:12</span>
                         <span class="activity-desc">システムにログインしました</span>
+                    </li>
+                    <li class="activity-item">
+                        <span class="activity-time">2016.10.27 02:48</span>
+                        <span class="activity-desc error">[SYSTEM] 12 files purged by Admin operation.</span>
+                    </li>
+                    <li class="activity-item" style="border-top: 2px solid #333; margin-top: 10px; padding-top: 20px;">
+                        <span class="activity-time">2016.10.22 10:05</span>
+                        <span class="activity-desc">"Inventory_Closing_Oct_Pre.xlsx" をアップロードしました。</span>
+                    </li>
+                    <li class="activity-item">
+                        <span class="activity-time">2016.10.12 16:30</span>
+                        <span class="activity-desc">"Luminar_Marketing_Assets.rar" をアップロードしました。</span>
+                    </li>
+                    <li class="activity-item">
+                        <span class="activity-time">2016.09.28 11:20</span>
+                        <span class="activity-desc">"Lease_Agreement_Annex.pdf" をアップロードしました。</span>
+                    </li>
+                    <li class="activity-item">
+                        <span class="activity-time">2016.10.27 01:15</span>
+                        <span class="activity-desc">"memo_201610260115.txt" を作成しました。</span>
+                    </li>
+                    <li class="activity-item">
+                        <span class="activity-time">2016.04.01 09:00</span>
+                        <span class="activity-desc">システムを初期化し、ログインしました。</span>
                     </li>
                 </ul>
             </div>
