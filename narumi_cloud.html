@@ -350,8 +350,10 @@
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.9);
             z-index: 2000;
-            overflow: auto;
-            align-items: center;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+            align-items: flex-start;
             justify-content: center;
         }
         .modal.active {
@@ -362,11 +364,13 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             max-width: 900px;
-            width: 90%;
+            width: 100%;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             position: relative;
+            margin: auto;
+            max-height: none;
         }
         .modal-body {
             display: flex;
@@ -439,6 +443,26 @@
         }
         .modal-close:hover {
             color: #fff;
+        }
+
+        /* モバイル用等に追加するボタン */
+        .mobile-close-btn {
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+            padding: 15px;
+            background: transparent;
+            color: #fff;
+            border: 1px solid #fff;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            letter-spacing: 2px;
+        }
+        .mobile-close-btn:hover {
+            background: #fff;
+            color: #000;
         }
     </style>
 </head>
@@ -681,6 +705,8 @@
                         <span class="exif-label">Copyright</span>
                         <span class="exif-value" id="exifCopyright" style="color: #888;"></span>
                     </div>
+                    <!-- モバイル等で押しやすい閉じるボタン -->
+                    <button class="mobile-close-btn" onclick="closeExifModal()">CLOSE / BACK</button>
                 </div>
             </div>
         </div>
@@ -701,11 +727,27 @@
             document.getElementById('exifCopyright').innerText = '© ' + copyright;
             
             document.getElementById('exifModal').classList.add('active');
+
+            // 履歴に追加（戻るボタンでモーダルを閉じられるようにする）
+            history.pushState({ modalOpen: true }, "");
         }
 
-        function closeExifModal() {
+        function closeExifModal(shouldPopHistory = true) {
             document.getElementById('exifModal').classList.remove('active');
+
+            // 手動で閉じられた場合、履歴を戻してpushStateをリセット
+            if (shouldPopHistory && history.state && history.state.modalOpen) {
+                history.back();
+            }
         }
+
+        // ブラウザの戻るボタンを検知
+        window.onpopstate = function(event) {
+            if (document.getElementById('exifModal').classList.contains('active')) {
+                // ポップステート発生時にモーダルが開いていたら閉じる（history.backは既に発生しているので引数false）
+                closeExifModal(false);
+            }
+        };
 
         // 背景クリックで閉じる
         document.getElementById('exifModal').addEventListener('click', function(e) {
